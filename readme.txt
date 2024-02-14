@@ -4,6 +4,11 @@ Description
     the linear Schrodinger-type eigenvalue problem for Coulomb potential.
     Molecular system is diatomic molecule with one electron in three-dimensions.
 
+Usage
+
+    Input is results obtained with diatomic_1e of HelFEM placed in the dat
+    directory.
+
 TODO 
 
     [OK] ce code va être dans un répertoire git
