@@ -16,7 +16,8 @@ Usage
 
 Requires
 
-    PySCF, HelFEM
+    PySCF (https://github.com/pyscf/pyscf)
+    HelFEM (https://github.com/susilehtola/HelFEM)
 
 TODO 
 
