@@ -6,8 +6,17 @@ Description
 
 Usage
 
+    Main H-norm calculation and estimation:
+
+        >>> python3 main.py
+
     Input is results obtained with diatomic_1e of HelFEM placed in the dat
-    directory.
+    directory. The parameters of diatomic_1e are obtained from diatomic_cbasis.
+    See dat/helfem_script.txt.
+
+Requires
+
+    PySCF, HelFEM
 
 TODO 
 
@@ -16,3 +25,5 @@ TODO
     [*] use the spherical harmonics from PySCF
     [*] write a bash script that calls the diatomic_cbasis then the diatomic
     code with the appropriate parameters and then outputs the density file
+
+

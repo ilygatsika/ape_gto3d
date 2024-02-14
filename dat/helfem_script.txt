@@ -1,0 +1,6 @@
+The results have been generated with the code 
+
+./diatomic_cbasis --Z1=H --Z2=H --Rbond=1.4
+./diatomic_1e --Z1=H --Z2=H --Rbond=1.400000e+00 --angstrom=0 --grid=4 --zexp=1.000000e+00 --primbas=4 --nnodes=15 --nelem=5 --Rmax=4.000000e+01 --lmax=6
+./diatomic_dgrid --load=helfem.chk
+
