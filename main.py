@@ -46,14 +46,6 @@ def inner_projection(u1, u2, dV=dV):
 
     return np.sum(u1 * u2 * dV)
 
-
-def fun(x, a, b):
-    '''
-    Equal to 1 on x=a and equal to 0 on x=b
-    smooth enough for estimator
-    '''
-
-
 def delta_value(a, b):
     '''
     Numerical threshold for evaluating fun on limit points
@@ -72,14 +64,6 @@ def delta_value(a, b):
         if d == d_new:
             break
         d = d_new
-    """
-    d0, err, n_max, n = 0.1, 100, 10, 0
-    while (err > eps and n < n_max):
-        d = g(d0)
-        err = abs(d - d0)
-        d0 = d
-        n += 1
-    """
 
     return d
 
@@ -99,7 +83,7 @@ def partition(x, a, b):
     else:
         return 1/(1+exp(-1/(x-a))/exp(-1/(b-x)))
 
-def partition_vec(x, a, b, f=fun):
+def partition_vec(x, a, b):
 
     delta = delta_value(a,b)
     print(f'{delta=}')
@@ -115,7 +99,7 @@ def partition_vec(x, a, b, f=fun):
 
     return y
 
-
+'''
 # Debug
 a, b = 1, 2
 print("Partition at x=a is %.16f" %partition(a, a, b))
@@ -126,6 +110,7 @@ x = np.linspace(a, b, 10000)
 plt.plot(x, partition_vec(x, a, b))
 plt.show()
 plt.close()
+'''
 
 # real_sph_vec(r, lmax, reorder_p=False)
 # Real spherical harmonics up to the angular momentum lmax
@@ -138,13 +123,17 @@ ylms = sph.real_sph_vec(coords_1sph, lmax, True)
 ylm_1sph = np.vstack(ylms)
 print(ylm_1sph.shape)
 
+# TODO
 # Pour obtenir la grille il faut lancer le calcul 1e et puis dans helfem.chk
 # il faut multiplier les coordonnées par le radius
+# waiting for vec_r from Susi
+'''
 p = partition_vec(vec_r, a, b)
 for i in range(n):
     r = vec_r[i]
     grid = r * coords_1sph
     # angular quadrature for each r
+'''
 
 # Test equation 22
 dV_test = np.power(Rh, 3) * np.sinh(mu) * (np.cosh(mu)**2 - cth**2) * wquad
@@ -162,11 +151,8 @@ val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_fem, dV=dV_pot)
 print(val_pot)
 print("Debug fem fem pot", np.isclose(val_pot,  -2.0581441345206777))
 
-
-
 # Reference energy with FEM
-E_nuc = 0.7142857142857143
-E_fem = -0.5699835280567614 
+E_fem = Efem_kin + Efem_nuc
 
 # Transform prolate spheroidal coordinates to cartesian
 X = Rh * np.sinh(mu) * sth * np.cos(phi)
@@ -193,8 +179,7 @@ for basis in bases:
             basis=basis, verbose=0)
     myhf = mol.UHF()
     myhf.run()
-    E_gto = myhf.kernel()
-    print(E_fem, E_gto)
+    E_gto_tot = myhf.kernel()
 
     C = myhf.mo_coeff[0][:,0]
     
@@ -234,7 +219,7 @@ for basis in bases:
     Enuc_ref = C.T @ V @ C
     print("Debug potential", np.isclose(Enuc_ref, Enuc))
 
-    print("Tot gto", Ekin + Enuc, E_gto - mol.energy_nuc())
+    print("Tot gto", Ekin + Enuc, E_gto_tot - mol.energy_nuc())
 
     # Si la grille FEM est ok les deux devraient etre 1
     print("gto gto ", inner_projection(u_gto, u_gto) )
@@ -256,20 +241,9 @@ for basis in bases:
     val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_gto, dV=dV_pot)
     #print("Potential term ", val_pot)
 
-    # Erreur H
-    corr = E_gto - (Ekin + Enuc) # bug : il manque ça
-    '''
-    # In search of reconstructing the corr term
-    dm = myhf.make_rdm1()[0]
-    vhf = myhf.get_veff(mol, dm)[0]
-    print(dm.shape, vhf.shape)
-    e_coul = np.einsum('ij,ji->', vhf, dm).real * .5
-    print(corr, e_coul)
-    '''
-
-    E_fem = Efem_kin + Efem_nuc
+    # Get GTO total energy
     E_gto = Ekin + Enuc
 
-    err_H = E_fem + E_gto - 2*corr - 2*(val_Delta + val_pot)
+    err_H = E_fem + E_gto - 2*(val_Delta + val_pot)
     print("Erreur u_fem - u_gto en norme H %.2e" % err_H )
 

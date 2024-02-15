@@ -23,8 +23,9 @@ TODO
 
     [OK] ce code va être dans un répertoire git
     [*] solve bug on H-norm error formula
+    [*] obtain atomic operator eigenvectors (understand R_nl)
     [*] use the spherical harmonics from PySCF
-    [*] write a bash script that calls the diatomic_cbasis then the diatomic
-    code with the appropriate parameters and then outputs the density file
+    [*] obtain radial part of eigenfunctions evaluated on FEM grid 
+    [*] test precision of lebedev quadrature on sphere
 
 
