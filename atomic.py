@@ -6,41 +6,62 @@ import matplotlib.pyplot as plt
 # n = l+1, .., nmax
 # 
 
+"""
+Eigenstates for Hydrogen atom:
+
+    Every state is denoted by nl,
+    where n:energy level or principal quantum number 
+          l:orbital quantum number (l<n), 
+    where n=1,2,3,... and l=0,1,2,...,n-1. Then we also have m=-l,...,+l that
+    counts for degeneracy
+
+    n=1, l=0 -> 1s
+    n=2, l=0 -> 2s
+         l=1 -> 2p
+    n=3, l=0 -> 3s
+         l=1 -> 3p
+         l=2 -> 3d
+"""
+
 # Input file atomic
-atom_file = 'dat/1e.chk'
+atom_file = 'dat/1e_lmax6.chk'
 
 f1 = h5py.File(atom_file)
 
-# valeurs et vecteurs propres
-lmax = 0
+# valeurs et vecteurs propres, partie angulaire
+lmax = 5
 E = []
 orbs = []
 for l in range(lmax + 1):
     E.append(np.array(f1[f'E_{l}']))
     orbs.append(np.array(f1[f'orbs_{l}']))
 
-# quadrature points
+# Radial part evaluated on quadrature points
 r = np.array(f1["r"]).flatten()
 
 # quadrature weights
 wr = np.array(f1["wr"]).flatten()
 
-print(orbs[0].shape)
-print(r.shape)
+#print(orbs[0].shape)
+#print(r.shape)
 
 for n in range(1,lmax + 1):
     print(f'{-0.5/n**2}')
 
+print(E)
+exit()
 
 # liste qui contient tous les vecteurs de la même énergie
-A = orbs[0] @ np.diag(np.multiply(np.square(r), wr)) @ orbs[0].T 
+A = orbs[0] @ np.diag(np.multiply(np.square(r), wr)) @ orbs[0].T
+n = A.shape[0]
 
-#print(A) 
-print(np.all(np.isclose(A, np.eye(139))))
+print(np.all(np.isclose(A, np.eye(n))))
 
-#B = orbs[1] @ np.diag(np.multiply(np.square(r), wr)) @ orbs[1].T 
-#print(np.all(np.isclose(B, np.eye(139))))
+B = orbs[1] @ np.diag(np.multiply(np.square(r), wr)) @ orbs[1].T 
+print(np.all(np.isclose(B, np.eye(n))))
 
+print(orbs[0].shape)
+#exit()
 """
 def inner_projection(u1, u2, dV=dV):
 

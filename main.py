@@ -1,6 +1,7 @@
 from math import exp, log
 import numpy as np
 import h5py
+import matplotlib.pyplot as plt
 
 # Deactivate PySCF error message
 from pyscf import __config__
@@ -148,11 +149,12 @@ dV_pot = V_Coulomb * np.sinh(mu) * wquad
 
 # Debug : this should reproduce results of Nuclear repulsion from diatomic
 val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_fem, dV=dV_pot)
-print(val_pot)
-print("Debug fem fem pot", np.isclose(val_pot,  -2.0581441345206777))
+print("Debug fem fem pot", np.isclose(val_pot,  Efem_nuc))
 
 # Reference energy with FEM
 E_fem = Efem_kin + Efem_nuc
+print(E_fem) 
+exit()
 
 # Transform prolate spheroidal coordinates to cartesian
 X = Rh * np.sinh(mu) * sth * np.cos(phi)
@@ -170,8 +172,17 @@ print(X.shape)
 # Devrait être 1
 print("fem fem ", inner_projection(u_fem, u_fem) )
 
-bases = ["cc-pvdz", "cc-pvtz", "unc-cc-pvdz", "unc-cc-pvtz", "pc-1", "unc-pc-1",
-         "pc-2", "unc-pc-2"]
+# pc is polarization consistent
+bases = ["cc-pvdz", "unc-cc-pvdz", "unc-cc-pvtz", "pc-1", "unc-pc-1",
+         "pc-2", "unc-pc-2", "cc-pvtz", "aug-cc-pvdz", "aug-cc-pvtz",
+         "aug-cc-pvqz", "cc-pvqz", "cc-pv5z", "aug-cc-pv5z", "pc-3", "pc-4",
+         "aug-pc-3", "aug-pc-4", "unc-pc-4"]
+
+err_eigval = []
+err_eigvec_L2 = []
+err_eigvec_H = []
+bas_size = []
+
 for basis in bases: 
 
     print("\n", basis)
@@ -180,6 +191,7 @@ for basis in bases:
     myhf = mol.UHF()
     myhf.run()
     E_gto_tot = myhf.kernel()
+    bas_size.append(mol.nbas)
 
     C = myhf.mo_coeff[0][:,0]
     
@@ -217,18 +229,20 @@ for basis in bases:
     # reference potential from PySCF
     V = mol.intor('int1e_nuc')
     Enuc_ref = C.T @ V @ C
-    print("Debug potential", np.isclose(Enuc_ref, Enuc))
+    #print("Debug potential", np.isclose(Enuc_ref, Enuc))
 
-    print("Tot gto", Ekin + Enuc, E_gto_tot - mol.energy_nuc())
+    #print("Tot gto", -(Ekin - Enuc), E_gto_tot - mol.energy_nuc())
+    #print("Tot fem", E_fem)
 
     # Si la grille FEM est ok les deux devraient etre 1
-    print("gto gto ", inner_projection(u_gto, u_gto) )
-    print("fem fem ", inner_projection(u_fem, u_fem) )
+    #print("gto gto ", inner_projection(u_gto, u_gto) )
+    #print("fem fem ", inner_projection(u_fem, u_fem) )
 
     # Si proche de 1 l'approximation est bonne
     # norme de la différence en carrée avec L2
     # integral \langle u_fem, u_gto\rangle
-    err_l2 = 2*(1 - inner_projection(u_fem, u_gto))
+    err_l2 = inner_projection(u_gto,u_gto) + inner_projection(u_fem, u_fem) - \
+            2*inner_projection(u_fem, u_gto)
     print("Erreur u_fem - u_gto en norme L2  %.2e" % err_l2 )
 
     # Laplacian term
@@ -242,8 +256,36 @@ for basis in bases:
     #print("Potential term ", val_pot)
 
     # Get GTO total energy
-    E_gto = Ekin + Enuc
+    E_gto = - (Ekin - Enuc)
 
-    err_H = E_fem + E_gto - 2*(val_Delta + val_pot)
+    err_H = E_fem + E_gto - 2*( - val_Delta + val_pot)
     print("Erreur u_fem - u_gto en norme H %.2e" % err_H )
+    print("Erreur on eigenvalue %.2e" % abs(E_fem - E_gto))
+
+    # Store results to lists
+    err_eigval.append(abs(E_fem - E_gto))
+    err_eigvec_L2.append(np.sqrt(err_l2))
+    err_eigvec_H.append(np.sqrt(err_H))
+
+# Sort regarding eigval error
+idx = np.argsort(err_eigval)[::-1]
+err_eigval = [err_eigval[i] for i in idx]
+err_eigvec_L2 = [err_eigvec_L2[i] for i in idx]
+err_eigvec_H = [err_eigvec_H[i] for i in idx]
+bases = [bases[i] for i in idx]
+bas_size = [bas_size[i] for i in idx]
+
+# Plot error convergence
+ntest = len(bases)
+labels = [str(bas_size[i]) + ' (' + bases[i] + ')' for i in range(ntest)]
+plt.xticks(np.arange(ntest), labels, rotation=45, fontsize=8, ha='right', rotation_mode='anchor')
+plt.plot(err_eigval, 'o-', label=r"$|\lambda_1 - \lambda_{1N}|$")
+plt.plot(err_eigvec_L2, 'x-', label=r"$u_1 - u_{1N}$ in L2")
+plt.plot(err_eigvec_H, '^-', label=r"$u_1 - u_{1N}$ in H")
+plt.yscale("log")
+plt.legend()
+plt.show()
+
+
+
 

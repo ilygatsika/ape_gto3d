@@ -1,6 +1,13 @@
 The results have been generated with the code 
 
+run from HelFEM_susi/HelFEM/objdir/src
+
 ./diatomic_cbasis --Z1=H --Z2=H --Rbond=1.4
 ./diatomic_1e --Z1=H --Z2=H --Rbond=1.400000e+00 --angstrom=0 --grid=4 --zexp=1.000000e+00 --primbas=4 --nnodes=15 --nelem=5 --Rmax=4.000000e+01 --lmax=6
 ./diatomic_dgrid --load=helfem.chk
+
+./1e_atom --Z=H --nelem=5 --lmax=20 --zexp=1.000e+00 --primbas=4 --nnodes=15 --Rmax=4e+01
+./1e_atom --Z=H --nelem=5 --lmax=20
+cp 1e.chk /home/io/Documents/rec/code/aposteriori/dat/1e_lmax6.chk
+
 
