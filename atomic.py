@@ -1,6 +1,10 @@
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
+from scipy.special import assoc_laguerre
+from scipy.special.constants import physical_constants
+from math import factorial as fact
+
 
 # R_nl, (m = -l, .., l)
 # n = l+1, .., nmax
@@ -22,6 +26,30 @@ Eigenstates for Hydrogen atom:
          l=1 -> 3p
          l=2 -> 3d
 """
+
+# Bohr radius
+a0, _, _ = physical_constants["Bohr radius"]
+
+def radial(n,l,r):
+    """
+    Return radial part of Hydrogen wave function
+
+    McQuarrie, page 223
+    """
+    # normalisation factor
+    a = fact(n-l-1)
+    b = 2*n*pow(fact(n+l), 3)
+    c = pow(2/(n*a0), l + 3/2)
+    nrml = -pow(a/b, 0.5) * c
+
+    # exponential
+    expo = pow(r,l) * np.exp(-r/(n*a0))
+
+    # associated Laguerre polynomial L_n^k
+    poly = assoc_laguerre(2/(n*a0), n+1, 2*l+1)
+
+    return (nrml * expo * poly)
+
 
 # Input file atomic
 atom_file = 'dat/1e_lmax6.chk'
