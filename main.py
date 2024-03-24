@@ -3,6 +3,9 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 
+from src.partition import partition_vec
+import src.read as read
+
 # Deactivate PySCF error message
 from pyscf import __config__
 setattr(__config__, 'B3LYP_WITH_VWN5', True)
@@ -10,34 +13,18 @@ from pyscf import gto, dft
 from pyscf.symm import sph
 from pyscf.solvent import ddcosmo
 
-
-'''
-    Disclaimer:
-    Thanks to Susi Lethola for useful discussions and instructions for writing
-    this code.
-'''
+"""
+Main code for H-norm error estimation using practical and guaranteed estimators
+"""
 
 # Input files
 density_file = 'dat/density.hdf5'
 helfem_res_file = 'dat/helfem.chk'
 
-# Read results from HelFEM files
-f1 = h5py.File(density_file)
-dV = np.array(f1["dV"])
-Rh = np.array(f1["Rh"])
-phi = np.array(f1["phi"])
-mu = np.array(f1["mu"])
-cth = np.array(f1["cth"])
-wquad = np.array(f1["wquad"]) # wquad = dmu * dOmega
-u_fem = np.array(f1["orba.re"])
-Z1 = np.array(f1["Z1"]) # Z1 noyau à gauche
-Z2 = np.array(f1["Z2"])
-# Obtain energies
-f2 = h5py.File(helfem_res_file)
-Efem = np.array(f2["Etot"]) 
-Efem_kin = np.array(f2["Ekin"]) 
-Efem_nuc = np.array(f2["Enuc"]) 
-Efem_nucr = np.array(f2["Enucr"]) 
+# Read data
+dV, Rh, phi, mu, cth, wquad, u_fem, Z1, Z1 = read.diatomic_density(density_file)
+Efem, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
+
 # Efem = Efem_kin + Efem_nuc + Efem_nucr
 
 ####################
@@ -47,72 +34,6 @@ def inner_projection(u1, u2, dV=dV):
 
     return np.sum(u1 * u2 * dV)
 
-def delta_value(a, b):
-    '''
-    Numerical threshold for evaluating fun on limit points
-    '''
-   
-    # Use double precision epsilon
-    eps = np.finfo(float).eps
-
-    # Equation to solve for s 
-    g = lambda s: 1/(-log(eps * exp(-1/(b-a-s))))
-
-    # Fixed point iteration
-    d = 0.1
-    while True:
-        d_new = g(d)
-        if d == d_new:
-            break
-        d = d_new
-
-    return d
-
-def partition(x, a, b):
-    '''
-    Partition of unity function p(x) for x>0
-    with support on (0,b), decreasing on (a,b) and constant on (0,a)
-    '''
-
-    # Numerical interval for avoiding division by zero
-    delta = delta_value(a, b)
-
-    if (x < a + delta):
-        return 1
-    elif (x > b - delta):
-        return 0
-    else:
-        return 1/(1+exp(-1/(x-a))/exp(-1/(b-x)))
-
-def partition_vec(x, a, b):
-
-    delta = delta_value(a,b)
-    print(f'{delta=}')
-    idx_1 = np.where(x < a + delta)[0]
-    idx_0 = np.where(x > b - delta)[0]
-    n = np.size(x)
-    mask = np.ones(n, dtype=bool)
-    mask[idx_1] = False
-    mask[idx_0] = False
-    y = np.ones(n, dtype=float)
-    y[idx_0] = 0
-    y[mask] = [partition(xpt, a, b) for xpt in x[mask]]
-
-    return y
-
-'''
-# Debug
-a, b = 1, 2
-print("Partition at x=a is %.16f" %partition(a, a, b))
-print("Partition at x=b is %.16f" %partition(b, a, b))
-
-import matplotlib.pyplot as plt
-x = np.linspace(a, b, 10000)
-plt.plot(x, partition_vec(x, a, b))
-plt.show()
-plt.close()
-'''
-
 # real_sph_vec(r, lmax, reorder_p=False)
 # Real spherical harmonics up to the angular momentum lmax
 # spherical harmonics are calculated in PySCF using cartesian to spherical trans
@@ -120,6 +41,19 @@ lmax = 2
 lebedev_order = 7
 #gen_atomic_grids(prune=None)
 coords_1sph, weights_1sph = ddcosmo.make_grids_one_sphere(lebedev_order)
+print(coords_1sph.shape)
+print(weights_1sph.shape)
+
+def evaluate_sph(f,r,phi,theta):
+    
+    g1 = r * np.sin(phi) * np.cos(theta)
+    g2 = r * np.sin(phi) * np.sin(theta)
+    g3 = r * np.cos(phi)
+
+    return (lambda phi, theta: f(gr,gphi,gtheta))
+
+exit()
+
 ylms = sph.real_sph_vec(coords_1sph, lmax, True)
 ylm_1sph = np.vstack(ylms)
 print(ylm_1sph.shape)
@@ -216,6 +150,12 @@ for basis in bases:
     lapl_ao = dft.numint.eval_ao(mol, coords, deriv=2)
     u_Delta_gto = (lapl_ao[4] + lapl_ao[7] + lapl_ao[9]) @ C
     Ekin = - 0.5 * inner_projection(u_gto, u_Delta_gto)
+
+    # Compute residual
+    # coordinates should be given by the radian part
+    
+    res_gto = E_gto * u_gto - (u_Delta_gto - V*u_gto)
+    
 
     # reference kinetic energy from PySCF
     T = mol.intor_symmetric('int1e_kin')

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.special import assoc_laguerre
 from scipy.special.constants import physical_constants
 from math import factorial as fact
-
+import src.read as read
 
 # R_nl, (m = -l, .., l)
 # n = l+1, .., nmax
@@ -54,21 +54,7 @@ def radial(n,l,r):
 # Input file atomic
 atom_file = 'dat/1e_lmax6.chk'
 
-f1 = h5py.File(atom_file)
-
-# valeurs et vecteurs propres, partie angulaire
-lmax = 5
-E = []
-orbs = []
-for l in range(lmax + 1):
-    E.append(np.array(f1[f'E_{l}']))
-    orbs.append(np.array(f1[f'orbs_{l}']))
-
-# Radial part evaluated on quadrature points
-r = np.array(f1["r"]).flatten()
-
-# quadrature weights
-wr = np.array(f1["wr"]).flatten()
+E, orbs, r, wr = read.atomic_energy(atom_file)
 
 #print(orbs[0].shape)
 #print(r.shape)
