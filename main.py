@@ -3,7 +3,7 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 
-from src.partition import partition_vec
+#from src.partition import partition_vec
 import src.read as read
 
 # Deactivate PySCF error message
@@ -22,7 +22,7 @@ density_file = 'dat/density.hdf5'
 helfem_res_file = 'dat/helfem.chk'
 
 # Read data
-dV, Rh, phi, mu, cth, wquad, u_fem, Z1, Z1 = read.diatomic_density(density_file)
+dV, Rh, helfem_grid, wquad, u_fem, Z1, Z1 = read.diatomic_density(density_file)
 Efem, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
 
 # Efem = Efem_kin + Efem_nuc + Efem_nucr
@@ -41,6 +41,11 @@ lmax = 2
 lebedev_order = 7
 #gen_atomic_grids(prune=None)
 coords_1sph, weights_1sph = ddcosmo.make_grids_one_sphere(lebedev_order)
+# coords_1sph contains points (x,y,z) on the unit sphere
+print(np.linalg.norm(coords_1sph, axis=1))
+print(np.linalg.norm(coords_1sph, axis=1).shape)
+exit()
+
 print(coords_1sph.shape)
 print(weights_1sph.shape)
 

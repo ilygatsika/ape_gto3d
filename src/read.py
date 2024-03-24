@@ -1,4 +1,5 @@
 import h5py
+import numpy as np
 
 """
 Routines for reading FEM solution data from HelFEM output files
@@ -20,7 +21,9 @@ def diatomic_density(filename):
     Z1 = np.array(f1["Z1"]) # Z1 noyau à gauche
     Z2 = np.array(f1["Z2"]) # Z2 noyau à droite
 
-    return (dV, Rh, phi, mu, cth, wquad, u_fem, Z1, Z2)
+    fem_grid = (mu, phi, cth)
+
+    return (dV, Rh, fem_grid, wquad, u_fem, Z1, Z2)
 
 
 def diatomic_energy(filename):

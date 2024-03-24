@@ -27,28 +27,6 @@ Eigenstates for Hydrogen atom:
          l=2 -> 3d
 """
 
-# Bohr radius
-a0, _, _ = physical_constants["Bohr radius"]
-
-def radial(n,l,r):
-    """
-    Return radial part of Hydrogen wave function
-
-    McQuarrie, page 223
-    """
-    # normalisation factor
-    a = fact(n-l-1)
-    b = 2*n*pow(fact(n+l), 3)
-    c = pow(2/(n*a0), l + 3/2)
-    nrml = -pow(a/b, 0.5) * c
-
-    # exponential
-    expo = pow(r,l) * np.exp(-r/(n*a0))
-
-    # associated Laguerre polynomial L_n^k
-    poly = assoc_laguerre(2/(n*a0), n+1, 2*l+1)
-
-    return (nrml * expo * poly)
 
 
 # Input file atomic
@@ -81,6 +59,17 @@ def inner_projection(u1, u2, dV=dV):
 
     return np.sum(u1 * u2 * dV)
 """
+
+# nmax degree of spectral decomposition
+# TODO is there a third summation -!!!-
+for n in range(nmax+1):
+    mvec = np.arange(-n, n+1)
+    # loop over degeneracy
+    for j range(2*l+1):
+        m = mvec[j]
+        # spherical harmonic Y_n^m
+        Ynm = orbs[m][n]
+
 
 #print(orbs[2].shape)
 

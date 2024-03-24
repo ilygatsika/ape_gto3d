@@ -29,6 +29,13 @@ def main():
     # exact answer to function "testfunc"
     exact = 216.0 * np.pi / 35.0
     r,w = leblib.get_points_and_weights(9)
+    #print(r)
+    print(r.shape)
+    print(w.shape)
+    print(np.linalg.norm(r, axis=1))
+    print(np.linalg.norm(r, axis=1).shape)
+    # every line has norm equal to 1
+    exit()
     integral = 4.0 * np.pi * np.sum(w * tfunc(r[:,0], r[:,1], r[:,2]))
     
     print('Integral: %f vs Exact: %f' % (integral, exact))
@@ -46,3 +53,5 @@ def tfunc(x,y,z):
 
 if __name__ == '__main__':
     main()
+
+

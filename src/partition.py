@@ -65,6 +65,7 @@ def partition_vec(x, a, b):
     return y
 
 # Debug
+"""
 a, b = 1, 2
 print("Partition at x=a is %.16f" %partition(a, a, b))
 print("Partition at x=b is %.16f" %partition(b, a, b))
@@ -74,4 +75,5 @@ x = np.linspace(a, b, 10000)
 plt.plot(x, partition_vec(x, a, b))
 plt.show()
 plt.close()
+"""
 
