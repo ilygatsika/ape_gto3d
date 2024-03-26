@@ -112,8 +112,9 @@ def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag, shift):
     
     return (E_gto * u_gto - Hu_gto) 
 
-def get_ylm(l,m,r):
+def get_ylm(l, m, r):
     """
+    Spherical harmonics
     Code from pyscf.symm.sph.real_sph_vec
     """
 
@@ -131,7 +132,7 @@ def get_ylm(l,m,r):
     varphi = np.arccos(cosphi)
     theta = np.arccos(costheta)
     theta[sintheta<0] = 2*np.pi - theta[sintheta<0]
-    ylm = sph_harm(0, l, theta, varphi).real
+    ylm = sph_harm(m, l, theta, varphi).real
 
     return ylm
 

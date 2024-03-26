@@ -29,9 +29,9 @@ Eigenstates for Hydrogen atom:
 
 
 # Input file atomic
-atom_file = 'dat/1e_lmax20_Rmax40.chk'
+atom_file = 'dat/1e_lmax20.chk'
 
-E, orbs, r, wr = read.atomic_energy(atom_file, lmax=6)
+E, orbs, r, wr = read.atomic_energy(atom_file, lmax=20)
 
 #print(orbs[0].shape)
 #print(r.shape)
