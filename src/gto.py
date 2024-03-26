@@ -2,7 +2,7 @@ from pyscf import __config__
 setattr(__config__, 'B3LYP_WITH_VWN5', True)
 from pyscf import gto, dft
 from scipy import constants
-from scipy.special import assoc_laguerre
+from scipy.special import assoc_laguerre, sph_harm
 from math import factorial as fact
 import numpy as np
 
@@ -80,7 +80,7 @@ def Coulomb(Rh, Z1, Z2):
     """
 
     nuc = np.array([0,0, Rh])
-    Vrad = lambda x: 1./np.sqrt(x[0]**2+x[1]**2+x[2]**2)
+    Vrad = lambda x: 1./np.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
     V = lambda x: Z1*Vrad(x-nuc) + Z2*Vrad(x+nuc)
 
     return V
@@ -111,4 +111,27 @@ def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag, shift):
     Hu_gto = -0.5 * u_Delta_gto - u_V + shift * u_gto
     
     return (E_gto * u_gto - Hu_gto) 
+
+def get_ylm(l,m,r):
+    """
+    Code from pyscf.symm.sph.real_sph_vec
+    """
+
+    ngrid = r.shape[0]
+    cosphi = r[:,2]
+    sinphi = (1-cosphi**2)**.5
+    costheta = np.ones(ngrid)
+    sintheta = np.zeros(ngrid)
+    costheta[sinphi!=0] = r[sinphi!=0,0] / sinphi[sinphi!=0]
+    sintheta[sinphi!=0] = r[sinphi!=0,1] / sinphi[sinphi!=0]
+    costheta[costheta> 1] = 1
+    costheta[costheta<-1] =-1
+    sintheta[sintheta> 1] = 1
+    sintheta[sintheta<-1] =-1
+    varphi = np.arccos(cosphi)
+    theta = np.arccos(costheta)
+    theta[sintheta<0] = 2*np.pi - theta[sintheta<0]
+    ylm = sph_harm(0, l, theta, varphi).real
+
+    return ylm
 

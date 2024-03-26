@@ -260,7 +260,8 @@ for n in range(nmax+1):
             eigval_max = eigval
 
         #print(n, l, "eigvalue", eigval)
-       
+      
+        """ DEBUG with our function
         # Loop on m=-l,..,l (angular part)
         ylms = sph.real_sph_vec(coords_1sph, l)
         # scipy.special.sph_harm(-m, l, theta, varphi)
@@ -269,6 +270,7 @@ for n in range(nmax+1):
         ylm_1sph = np.vstack(ylms) # array (m,num_sph)
         num_ang = ylm_1sph.shape
         #print("angular part evaluated on grid of ", num_ang)
+        """
              
         # Angular part evaluated on a grid
         val_r = []
@@ -284,9 +286,10 @@ for n in range(nmax+1):
 
             # Loop degeneracy
             val = 0
-            for k in range(num_ang[0]):
+            for m in range(-l,l+1):
 
-                psi = ylm_1sph[k] # eigenstate at l,m
+                # eigenstate at l,m
+                psi = gto.get_ylm(l,m,coords_1sph)
                 
                 # Compute angular integral associated to fixed r
                 val += Rln[i] * (Res @ dV_ang @ psi.T)
