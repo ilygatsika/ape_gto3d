@@ -18,13 +18,14 @@ def diatomic_density(filename):
     cth = np.array(f1["cth"])
     wquad = np.array(f1["wquad"]) # wquad = dmu *  dOmega
     u_fem = np.array(f1["orba.re"])
+    T_fem = np.array(f1["Torba.re"])
     Z1 = np.array(f1["Z1"]) # Z1 noyau à gauche
     Z2 = np.array(f1["Z2"]) # Z2 noyau à droite
+    P = np.array(f1["P"])
 
     fem_grid = (mu, phi, cth)
-
-    return (dV, Rh, fem_grid, wquad, u_fem, Z1, Z2)
-
+    
+    return (dV, Rh, fem_grid, wquad, u_fem, Z1, Z2, T_fem, P)
 
 def diatomic_energy(filename):
     """
@@ -36,10 +37,13 @@ def diatomic_energy(filename):
     Efem_kin = np.array(f2["Ekin"]) 
     Efem_nuc = np.array(f2["Enuc"]) 
     Efem_nucr = np.array(f2["Enucr"])
+    T = np.array(f2["T"])
+    S = np.array(f2["S"])
+    H0 = np.array(f2["H0"])
 
-    return (Efem, Efem_kin, Efem_nuc, Efem_nucr)
+    return (Efem, Efem_kin, Efem_nuc, Efem_nucr, T, S, H0)
 
-def atomic_energy(filename, lmax=5):
+def atomic_energy(filename, lmax):
     """
     Read excited states of radial problem
     """

@@ -1,13 +1,13 @@
 from pyscf import __config__
 setattr(__config__, 'B3LYP_WITH_VWN5', True)
 from pyscf import gto, dft
-
-# TODO import error
-from scipy.special.constants import physical_constants
+from scipy import constants
 from scipy.special import assoc_laguerre
+from math import factorial as fact
+import numpy as np
 
 # Bohr radius
-a0, _, _ = physical_constants["Bohr radius"]
+a0,_,_ = constants.physical_constants['Bohr radius']
 
 """
 Call PySCF routines for GTO basis sets
@@ -69,4 +69,41 @@ def radial_atomic(n,l,r):
     poly = assoc_laguerre(2/(n*a0), n+1, 2*l+1)
 
     return (nrml * expo * poly)
+
+def Coulomb(Rh, Z1, Z2):
+    """
+    Electron-nuclear repulsion
+    Coulomb potential as a function
+    """
+
+    nuc = np.array([0,0, Rh])
+    Vrad = lambda x: pow(x[0]**2+x[1]**2+x[2]**2,-1)
+    V = lambda x: Z1*Vrad(x-nuc) + Z2*Vrad(x+nuc)
+
+    return V
+
+def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag):
+    """
+    Compute residual of Gaussian discretisation
+    flag controls the sign
+    """
+
+    # Kinetic term
+    u_Delta_gto = build_Delta(mol, coord, C)
+
+    ao_value = dft.numint.eval_ao(mol, coord)
+    u_gto = ao_value @ C
+
+    # Convention to take positive
+    if flag : u_gto = - u_gto 
+
+    # Coulomb term
+    V = Coulomb(Rh, Z1, Z2)
+    V_eval = [V(point) for point in coord]
+    u_V = np.multiply(V_eval, u_gto)
+
+    # Hu term
+    Hu_gto = -0.5 * u_Delta_gto - u_V
+    
+    return (E_gto * u_gto - Hu_gto) 
 

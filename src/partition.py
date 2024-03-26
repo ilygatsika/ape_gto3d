@@ -51,7 +51,7 @@ def partition_vec(x, a, b):
     """
 
     delta = delta_value(a,b)
-    print(f'{delta=}')
+    #print(f'{delta=}')
     idx_1 = np.where(x < a + delta)[0]
     idx_0 = np.where(x > b - delta)[0]
     n = np.size(x)

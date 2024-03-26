@@ -25,3 +25,25 @@ def prolate_to_cart(Rh, helfem_grid):
 
     return coords
 
+def build_dV_pot(helfem_grid, Z1, Z2, wquad):
+    """
+    Build integration volume element for Coulomb
+    """
+
+    mu, phi, cth = helfem_grid 
+    V_Coulomb = (Z1 + Z2) * np.cosh(mu) + (Z2 - Z1) * cth
+    dV_pot = V_Coulomb * np.sinh(mu) * wquad
+
+    return dV_pot
+
+def build_dV_pot_atomic(helfem_grid, wquad):
+    """
+    Build integration volume element for Coulomb
+    """
+
+    mu, phi, cth = helfem_grid 
+    V_Coulomb = np.cosh(mu)
+    dV_pot = V_Coulomb * np.sinh(mu) * wquad
+
+    return dV_pot
+

@@ -2,6 +2,7 @@ from math import exp, log
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
+import src.fem as fem
 
 #from src.partition import partition_vec
 import src.read as read
@@ -22,7 +23,7 @@ density_file = 'dat/density.hdf5'
 helfem_res_file = 'dat/helfem.chk'
 
 # Read data
-dV, Rh, helfem_grid, wquad, u_fem, Z1, Z1 = read.diatomic_density(density_file)
+dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2, T_fem = read.diatomic_density(density_file)
 Efem, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
 
 # Efem = Efem_kin + Efem_nuc + Efem_nucr
@@ -44,7 +45,6 @@ coords_1sph, weights_1sph = ddcosmo.make_grids_one_sphere(lebedev_order)
 # coords_1sph contains points (x,y,z) on the unit sphere
 print(np.linalg.norm(coords_1sph, axis=1))
 print(np.linalg.norm(coords_1sph, axis=1).shape)
-exit()
 
 print(coords_1sph.shape)
 print(weights_1sph.shape)
@@ -57,8 +57,7 @@ def evaluate_sph(f,r,phi,theta):
 
     return (lambda phi, theta: f(gr,gphi,gtheta))
 
-exit()
-
+coords = fem.prolate_to_cart(Rh, helfem_grid)
 ylms = sph.real_sph_vec(coords_1sph, lmax, True)
 ylm_1sph = np.vstack(ylms)
 print(ylm_1sph.shape)
@@ -75,6 +74,7 @@ for i in range(n):
     # angular quadrature for each r
 '''
 
+mu, phi, cth = helfem_grid 
 # Test equation 22
 dV_test = np.power(Rh, 3) * np.sinh(mu) * (np.cosh(mu)**2 - cth**2) * wquad
 print(all(np.isclose(dV.flatten(), dV_test.flatten())))
@@ -93,7 +93,6 @@ print("Debug fem fem pot", np.isclose(val_pot,  Efem_nuc))
 # Reference energy with FEM
 E_fem = Efem_kin + Efem_nuc
 print(E_fem) 
-exit()
 
 # Transform prolate spheroidal coordinates to cartesian
 X = Rh * np.sinh(mu) * sth * np.cos(phi)
@@ -159,7 +158,7 @@ for basis in bases:
     # Compute residual
     # coordinates should be given by the radian part
     
-    res_gto = E_gto * u_gto - (u_Delta_gto - V*u_gto)
+    #res_gto = E_gto * u_gto - (u_Delta_gto - V*u_gto)
     
 
     # reference kinetic energy from PySCF
@@ -229,7 +228,9 @@ plt.plot(err_eigvec_L2, 'x-', label=r"$u_1 - u_{1N}$ in L2")
 plt.plot(err_eigvec_H, '^-', label=r"$u_1 - u_{1N}$ in H")
 plt.yscale("log")
 plt.legend()
-plt.show()
+plt.tight_layout()
+plt.savefig("img/norms.pdf")
+plt.close()
 
 
 
