@@ -26,8 +26,8 @@ helfem_res_file = 'dat/helfem.chk'
 atom_file = 'dat/1e_lmax20_Rmax1_4.chk'
 
 # Read data Diatomic
-dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2, T_fem, P = read.diatomic_density(density_file)
-Efem, Efem_kin, Efem_nuc, Efem_nucr, T, S, H0 = read.diatomic_energy(helfem_res_file)
+dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+Efem, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
 
 print("u_fem", u_fem[0].shape)
 print("T_fem", T_fem[0].shape)
@@ -76,6 +76,7 @@ plt.close()
 # Coulomb potential integration
 dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
 
+"""
 # Residual evaluated on FEM
 Res = gto.residual(mol, coords, C, E_gto, Rh, Z1, Z2, flag)
 nfem = np.size(u_fem)
@@ -99,8 +100,7 @@ f = S @ Res
 c = np.linalg.solve(H0, f)
 print(c.shape)
 print("dual norm of residual", c @ f) 
-
-exit()
+"""
 
 # Electron-nuclear repulsion
 nuc = np.array([0,0, Rh])

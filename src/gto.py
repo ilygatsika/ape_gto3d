@@ -37,8 +37,11 @@ def build_gto_sol(Rh, basis):
 
     # Without nuclear repulsion
     E_gto = E_gto_tot - mol.energy_nuc()
-
-    return (mol, E_gto, C)
+    
+    # Excited states (10 for H2)
+    E_gto_excited = myhf.mo_energy[0]
+    
+    return (mol, E_gto, C, E_gto_excited)
 
 def build_Delta(mol, coords, C):
     """
@@ -77,12 +80,12 @@ def Coulomb(Rh, Z1, Z2):
     """
 
     nuc = np.array([0,0, Rh])
-    Vrad = lambda x: pow(x[0]**2+x[1]**2+x[2]**2,-1)
+    Vrad = lambda x: 1./np.sqrt(x[0]**2+x[1]**2+x[2]**2)
     V = lambda x: Z1*Vrad(x-nuc) + Z2*Vrad(x+nuc)
 
     return V
 
-def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag):
+def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag, shift):
     """
     Compute residual of Gaussian discretisation
     flag controls the sign
@@ -95,15 +98,17 @@ def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag):
     u_gto = ao_value @ C
 
     # Convention to take positive
-    if flag : u_gto = - u_gto 
+    if flag : 
+        u_Delta_gto = - u_gto 
+        u_gto = - u_gto 
 
     # Coulomb term
     V = Coulomb(Rh, Z1, Z2)
     V_eval = [V(point) for point in coord]
     u_V = np.multiply(V_eval, u_gto)
 
-    # Hu term
-    Hu_gto = -0.5 * u_Delta_gto - u_V
+    # Hu term *do not forget the shift*
+    Hu_gto = -0.5 * u_Delta_gto - u_V + shift * u_gto
     
     return (E_gto * u_gto - Hu_gto) 
 

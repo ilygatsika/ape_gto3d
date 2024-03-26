@@ -19,11 +19,11 @@ Main code for H-norm error estimation using practical and guaranteed estimators
 """
 
 # Input files
-density_file = 'dat/density.hdf5'
-helfem_res_file = 'dat/helfem.chk'
+density_file = 'dat/density_small.hdf5'
+helfem_res_file = 'dat/helfem_small.chk'
 
 # Read data
-dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2, T_fem = read.diatomic_density(density_file)
+dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
 Efem, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
 
 # Efem = Efem_kin + Efem_nuc + Efem_nucr
@@ -111,10 +111,12 @@ print(X.shape)
 print("fem fem ", inner_projection(u_fem, u_fem) )
 
 # pc is polarization consistent
-bases = ["cc-pvdz", "unc-cc-pvdz", "unc-cc-pvtz", "pc-1", "unc-pc-1",
+"""bases = ["cc-pvdz", "unc-cc-pvdz", "unc-cc-pvtz", "pc-1", "unc-pc-1",
          "pc-2", "unc-pc-2", "cc-pvtz", "aug-cc-pvdz", "aug-cc-pvtz",
          "aug-cc-pvqz", "cc-pvqz", "cc-pv5z", "aug-cc-pv5z", "pc-3", "pc-4",
          "aug-pc-3", "aug-pc-4", "unc-pc-4"]
+"""
+bases = ["cc-pvdz"]
 
 err_eigval = []
 err_eigvec_L2 = []
@@ -204,6 +206,7 @@ for basis in bases:
 
     err_H = E_fem + E_gto - 2*( - val_Delta + val_pot)
     print("Erreur u_fem - u_gto en norme H %.2e" % err_H )
+    print(E_fem, E_gto)
     print("Erreur on eigenvalue %.2e" % abs(E_fem - E_gto))
 
     # Store results to lists
