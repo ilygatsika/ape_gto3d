@@ -2,7 +2,7 @@ from pyscf import __config__
 setattr(__config__, 'B3LYP_WITH_VWN5', True)
 from pyscf import gto, dft
 from scipy import constants
-from scipy.special import assoc_laguerre, sph_harm
+from scipy.special import assoc_laguerre
 from math import factorial as fact
 import numpy as np
 
@@ -112,27 +112,4 @@ def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag, shift):
     
     return (E_gto * u_gto - Hu_gto) 
 
-def get_ylm(l, m, r):
-    """
-    Spherical harmonics
-    Code from pyscf.symm.sph.real_sph_vec
-    """
-
-    ngrid = r.shape[0]
-    cosphi = r[:,2]
-    sinphi = (1-cosphi**2)**.5
-    costheta = np.ones(ngrid)
-    sintheta = np.zeros(ngrid)
-    costheta[sinphi!=0] = r[sinphi!=0,0] / sinphi[sinphi!=0]
-    sintheta[sinphi!=0] = r[sinphi!=0,1] / sinphi[sinphi!=0]
-    costheta[costheta> 1] = 1
-    costheta[costheta<-1] =-1
-    sintheta[sintheta> 1] = 1
-    sintheta[sintheta<-1] =-1
-    varphi = np.arccos(cosphi)
-    theta = np.arccos(costheta)
-    theta[sintheta<0] = 2*np.pi - theta[sintheta<0]
-    ylm = sph_harm(m, l, theta, varphi).real
-
-    return ylm
 

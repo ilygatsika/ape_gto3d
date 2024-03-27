@@ -36,14 +36,4 @@ def build_dV_pot(helfem_grid, Z1, Z2, wquad):
 
     return dV_pot
 
-def build_dV_pot_atomic(helfem_grid, wquad):
-    """
-    Build integration volume element for Coulomb
-    """
-
-    mu, phi, cth = helfem_grid 
-    V_Coulomb = np.cosh(mu)
-    dV_pot = V_Coulomb * np.sinh(mu) * wquad
-
-    return dV_pot
 

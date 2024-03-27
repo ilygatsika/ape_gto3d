@@ -10,4 +10,16 @@ run from HelFEM_susi/HelFEM/objdir/src
 ./1e_atom --Z=H --nelem=5 --lmax=20
 cp 1e.chk /home/io/Documents/rec/code/aposteriori/dat/1e_lmax6.chk
 
+Results can be seen as
+
+h5dump --header dat/1e_lmax20_Rmax40.chk
+
+small is obtained with
+
+./diatomic_1e --Z1=H --Z2=H --Rbond=1.400000e+00 --angstrom=0 --grid=4 --zexp=1.000000e+00 --primbas=3 --nnodes=2 --nelem=3 --Rmax=4.000000e+01 --lmax=3
+
+small_long is obtained with
+
+./diatomic_1e --Z1=H --Z2=H --Rbond=1.400000e+00 --angstrom=0 --grid=4 --zexp=1.000000e+00 --primbas=3 --nnodes=2 --nelem=3 --Rmax=8.000000e+01 --lmax=3
+
 
