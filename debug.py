@@ -1,15 +1,30 @@
 import sympy
 import numpy as np
+import src.read as read
+import src.fem as fem
 from src.partition import eval_supremum as test
 from src.partition import partition_compl as test_2
 
+"""
+Problem avec FEM grid is the quality around zero
+"""
+
 a, b = 0.5, 0.8
-Rh = 0.7
-Z1, Z2 = 1, 1
 sigmas = (3, 3, 3, 9)
 
-vec_r = np.linspace(-5*Rh, 5*Rh, 500)
-test_2(Rh, vec_r, a, b, plot=True)
+density_file = 'dat/density.hdf5'
+dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+coords_init = fem.prolate_to_cart(Rh, helfem_grid)
+print(coords_init.shape)
+coords = np.zeros(coords_init.shape)
+coords[:,2] = np.sort(coords_init[:,2])
+test_2(Rh, coords, a, b, plot=True)
+
+X = np.linspace(-2*Rh, 2*Rh, 500)
+coords = np.zeros((X.shape[0], 3))
+coords[:,2] = X
+test_2(Rh, coords, a, b, plot=True)
+
 exit()
 
 test(a, b, Rh, Z1, Z2, sigmas)

@@ -5,6 +5,7 @@ from pyscf.symm import sph
 import src.read as read
 import src.gto as gto
 import src.fem as fem
+import src.partition as pou
 import pymp
 
 """
@@ -107,7 +108,7 @@ class Test(unittest.TestCase):
         for f(x) = c*exp(-|r|^2) where c is normalisation factor
         """
 
-        density_file = 'dat/density_medium_long.hdf5'
+        density_file = 'dat/density_small.hdf5'
         dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
         coords = fem.prolate_to_cart(Rh, helfem_grid)
         ncoords = coords.shape[0]
@@ -140,6 +141,30 @@ class Test(unittest.TestCase):
         # integral small extra long: 0.7690315414 
         # integral medium long:      0.7698993927 
         print("Integral %.10f, exact %.10f" %(integral, exact) )
+
+    def test_partitions(self):
+        """
+        Problem avec FEM grid is the quality around zero
+        """
+
+        a, b = 0.5, 0.8
+        sigmas = (3, 3, 3, 9)
+
+        # HelFEM grid
+        density_file = 'dat/density.hdf5'
+        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+        coords_init = fem.prolate_to_cart(Rh, helfem_grid)
+        print(coords_init.shape)
+        coords = np.zeros(coords_init.shape)
+        coords[:,2] = np.sort(coords_init[:,2])
+        pou.partition_compl(Rh, coords, a, b, plot=True)
+
+        # Uniform grid
+        X = np.linspace(-2*Rh, 2*Rh, 500)
+        coords = np.zeros((X.shape[0], 3))
+        coords[:,2] = X
+        pou.partition_compl(Rh, coords, a, b, plot=True)
+
 
 if __name__ == '__main__':
     unittest.main() 

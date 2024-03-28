@@ -38,7 +38,7 @@ def partition(x, a, b):
     """
 
     # Numerical interval for avoiding division by zero
-    delta = delta_value(a, b)
+    delta = 0#delta_value(a, b)
 
     if (x < a + delta):
         return 1
@@ -49,10 +49,10 @@ def partition(x, a, b):
 
 def partition_vec(x, a, b):
     """
-    Evaluate partition function on a vector
+    Evaluate partition function on a vector x of radial parts
     """
 
-    delta = delta_value(a,b)
+    delta = 0# delta_value(a,b)
     #print(f'{delta=}')
     idx_1 = np.where(x < a + delta)[0]
     idx_0 = np.where(x > b - delta)[0]
@@ -66,22 +66,28 @@ def partition_vec(x, a, b):
 
     return y
 
-def partition_compl(Rh, vec_r, amin, amax, plot=False):
+def partition_compl(Rh, coords, amin, amax, plot=False):
     """
     Partition of unity of the complement domain of two atoms
+    evaluated on 3D grid
 
     Atoms positioned at -Rh and +Rh on z-axis
     """
     
-    #vec_r = np.linalg.norm(coords, axis=1)
-    p1 = partition_vec(vec_r, amin + Rh, amax + Rh)
-    p2 = 1 - partition_vec(vec_r, amax + Rh, amin + Rh)
+    nuc = np.array([0,0,-Rh])
+    rad_1 = np.linalg.norm(coords - nuc, axis=1)
+    rad_2 = np.linalg.norm(coords + nuc, axis=1)
+    p1 = partition_vec(rad_1, amin, amax)
+    p2 = partition_vec(rad_2, amin, amax)
     p3 = 1 - p1 - p2
     
     if (plot):
-        plt.plot(vec_r, p1, label="p1")
-        plt.plot(vec_r, p2, label="p2")
-        plt.plot(vec_r, p3, label="p3")
+        # z-section
+        zvec = coords[:,2]
+        plt.plot(zvec, p1, label="p1")
+        plt.plot(zvec, p2, label="p2")
+        plt.plot(zvec, p3, label="p3")
+        plt.xlabel("z coord")
         plt.legend()
         plt.show()
         plt.close()
@@ -135,10 +141,11 @@ def deriv_partition_vec(vfun, r, a, b):
 
     return y
 
-def eval_supremum(a, b, Rh, Z1, Z2, sigmas):
+def eval_supremum(coords, amin, amax, Rh, Z1, Z2, sigmas):
     """
     Evaluate supremum in constant (3.1) of paper
-    Attention a + delta < r < b - delta
+    over coords 3D Cartesian coordinates
+    Attention amin < |coord| < amax
     """
     
     # Shift
@@ -147,44 +154,73 @@ def eval_supremum(a, b, Rh, Z1, Z2, sigmas):
     # Build Laplacian and gradient of partition
     Delta, nabla = build_deriv_partition()
 
-    npts = 500
-    vec_r = np.linspace(-2*Rh, 2*Rh, npts)
+    # Coulomb potentials centered at zero
+    V1 = lambda r: -Z1/r
+    V2 = lambda r: -Z2/r
+    
+    # Distance of grid points from nuclei
+    nuc = np.array([0,0,-Rh])
+    rad_1 = np.linalg.norm(coords - nuc, axis=1)
+    rad_2 = np.linalg.norm(coords + nuc, axis=1)
 
-    # Term centered on atom 1 at position -Rh
-    V1 = np.vectorize(lambda r: -Z1/r)(vec_r + Rh)
-    Delta_1 = deriv_partition_vec(Delta, vec_r + Rh, a - Rh, b - Rh)
-    nabla_1 = deriv_partition_vec(nabla, vec_r + Rh, a - Rh, b - Rh)
-    p1 = partition_vec(vec_r, - a - Rh, b + Rh)
-    #tot_1 = - 0.5 * Delta_1 + nabla_1**2/(4*p1) + V1*(p1 - 1) + (sigma1 - sigma)*p1
+    # For every 3D point evaluate function to minimize
+    npts = rad_1.shape[0]
+    vals = np.empty(npts, dtype=float)
+    for i in range(npts):
 
-    # Term centered on atom 2 at position +Rh
-    V2 = np.vectorize(lambda r: -Z1/r)(vec_r - Rh)
-    Delta_2 = deriv_partition_vec(Delta, vec_r - Rh, a + Rh, b + Rh)
-    nabla_2 = deriv_partition_vec(nabla, vec_r - Rh, a + Rh, b + Rh)
-    p2 = 1 - partition_vec(vec_r, - b - Rh, a + Rh)
-    #tot_2 = - 0.5 * Delta_2 + nabla_2**2/(4*p2) + V2*(p2 - 1) + (sigma2 - sigma)*p2
+        r1 = rad_1[i]
+        r2 = rad_2[i]
 
-    import matplotlib.pyplot as plt
-    plt.plot(vec_r, V1)
-    plt.plot(vec_r, p1)
-    plt.plot(vec_r, V2)
-    plt.plot(vec_r, p2)
-    plt.show()
-    exit()
+        # Term centered at first atom
+        val1 = 0
+        if (amin < r1 < amax): 
 
-    # Term centered on complement
-    Delta_3 = - Delta_1 - Delta_2
-    nabla_3 = - nabla_1 - nabla_2
-    p3 = 1 - p1 - p2
-    tot_3 = - 0.5 * Delta_3 + nabla_3**2/(4*p3) + (sigma3 - sigma)*p3
+            p1 = partition(r1, amin, amax)
+            val1 = - 0.5 * Delta(r1, amin, amax) + \
+                    nabla(r1, amin, amax)**2/(4*p1) + V1(r1) + \
+                    (sigma1 - sigma)*p1
 
-    # Take positive part of sum
-    tot = tot_1 + tot_2 + tot_3
-    print(tot)
-    tot = tot[tot > 0]
+        # Term centered at second atom
+        val2 = 0
+        if (amin < r2 < amax): 
+
+            p2 = partition(r2, amin, amax)
+            val2 = - 0.5 * Delta(r2, amin, amax) + \
+                    nabla(r2, amin, amax)**2/(4*p1) + V2(r2) + \
+                    (sigma2 - sigma)*p2
+
+        # Term centered at complement
+        val3 = 0
+        if (amin < r1 < amax):
+
+            D3 = - Delta(r1, amin, amax)
+            g3 = - nabla(r1, amin, amax)
+            p3 = 1 - partition(r1, amin, amax)
+
+            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+
+        if (amin < r2 < amax):
+
+            D3 = - Delta(r2, amin, amax)
+            g3 = - nabla(r2, amin, amax)
+            p3 = 1 - partition(r2, amin, amax)
+
+            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+        
+        if ((amin < r1 < amax) and (amin < r2 < amax)):
+            # Here we have more terms
+
+            D3 = - Delta(r1, amin, amax) - Delta(r2, amin, amax)
+            g3 = - nabla(r1, amin, amax) - nabla(r2, amin, amax)
+            p3 = 1 - partition(r1, amin, amax) - partition(r2, amin, amax)
+
+            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+
+        # Store value (positive part)
+        vals[i] = max(val1 + val2 + val3,0)
 
     # Supremum
-    max_val = np.amax(tot)
+    max_val = np.amax(vals)
 
     return max_val
 
