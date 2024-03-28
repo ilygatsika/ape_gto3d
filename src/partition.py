@@ -38,7 +38,7 @@ def partition(x, a, b):
     """
 
     # Numerical interval for avoiding division by zero
-    delta = 0#delta_value(a, b)
+    delta = delta_value(a, b)
 
     if (x < a + delta):
         return 1
@@ -52,7 +52,7 @@ def partition_vec(x, a, b):
     Evaluate partition function on a vector x of radial parts
     """
 
-    delta = 0# delta_value(a,b)
+    delta = delta_value(a,b)
     #print(f'{delta=}')
     idx_1 = np.where(x < a + delta)[0]
     idx_0 = np.where(x > b - delta)[0]
@@ -141,11 +141,11 @@ def deriv_partition_vec(vfun, r, a, b):
 
     return y
 
-def eval_supremum(coords, amin, amax, Rh, Z1, Z2, sigmas):
+def eval_supremum(coords, amin, amax, Rh, Z1, Z2, sigmas, plot=False):
     """
     Evaluate supremum in constant (3.1) of paper
     over coords 3D Cartesian coordinates
-    Attention amin < |coord| < amax
+    Attention amin + delta < |coord| < amax - delta
     """
     
     # Shift
@@ -162,6 +162,9 @@ def eval_supremum(coords, amin, amax, Rh, Z1, Z2, sigmas):
     nuc = np.array([0,0,-Rh])
     rad_1 = np.linalg.norm(coords - nuc, axis=1)
     rad_2 = np.linalg.norm(coords + nuc, axis=1)
+    delta = delta_value(amin,amax)
+    is_slice_1 = (amin + delta < rad_1) & (rad_1 < amax - delta)
+    is_slice_2 = (amin + delta < rad_2) & (rad_2 < amax - delta)
 
     # For every 3D point evaluate function to minimize
     npts = rad_1.shape[0]
@@ -173,51 +176,55 @@ def eval_supremum(coords, amin, amax, Rh, Z1, Z2, sigmas):
 
         # Term centered at first atom
         val1 = 0
-        if (amin < r1 < amax): 
+        if (is_slice_1[i]): 
 
+            D1 = Delta(r1, amin, amax)
+            g1 = nabla(r1, amin, amax)
             p1 = partition(r1, amin, amax)
-            val1 = - 0.5 * Delta(r1, amin, amax) + \
-                    nabla(r1, amin, amax)**2/(4*p1) + V1(r1) + \
-                    (sigma1 - sigma)*p1
+            val1 = - 0.5 * D1 + g1**2/(4*p1) + V1(r1) + (sigma1 - sigma)*p1
 
         # Term centered at second atom
         val2 = 0
-        if (amin < r2 < amax): 
+        if (is_slice_2[i]): 
 
+            D2 = Delta(r2, amin, amax)
+            g2 = nabla(r2, amin, amax)
             p2 = partition(r2, amin, amax)
-            val2 = - 0.5 * Delta(r2, amin, amax) + \
-                    nabla(r2, amin, amax)**2/(4*p1) + V2(r2) + \
-                    (sigma2 - sigma)*p2
+            val2 = - 0.5 * D2 + g2**2/(4*p2) + V2(r2) + (sigma2 - sigma)*p2
 
         # Term centered at complement
         val3 = 0
-        if (amin < r1 < amax):
+        if (is_slice_1[i]) and (is_slice_2[i]):
 
-            D3 = - Delta(r1, amin, amax)
-            g3 = - nabla(r1, amin, amax)
-            p3 = 1 - partition(r1, amin, amax)
+                D3 = - D1 - D2
+                g3 = - g1 - g2
+                p3 = 1 - p1 - p2
+                val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
 
-            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+        elif (is_slice_1[i]):
 
-        if (amin < r2 < amax):
+                D3 = - D1
+                g3 = - g1
+                p3 = 1 - p1
+                val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
 
-            D3 = - Delta(r2, amin, amax)
-            g3 = - nabla(r2, amin, amax)
-            p3 = 1 - partition(r2, amin, amax)
+        elif (is_slice_2[i]):
 
-            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+                D3 = - D2
+                g3 = - g2
+                p3 = 1 - p2
+                val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
         
-        if ((amin < r1 < amax) and (amin < r2 < amax)):
-            # Here we have more terms
-
-            D3 = - Delta(r1, amin, amax) - Delta(r2, amin, amax)
-            g3 = - nabla(r1, amin, amax) - nabla(r2, amin, amax)
-            p3 = 1 - partition(r1, amin, amax) - partition(r2, amin, amax)
-
-            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
-
         # Store value (positive part)
         vals[i] = max(val1 + val2 + val3,0)
+
+    if (plot):
+        # z-section
+        zvec = coords[:,2]
+        plt.plot(zvec, vals)
+        plt.xlabel("z coord")
+        plt.show()
+        plt.close()
 
     # Supremum
     max_val = np.amax(vals)
