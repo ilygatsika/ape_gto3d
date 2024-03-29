@@ -9,7 +9,7 @@ from src.partition import partition_compl as test_2
 Problem avec FEM grid is the quality around zero
 """
 
-amin, amax = 0.5, 0.8
+amin, amax = 0.1, 0.8
 sigmas = (3, 3, 3, 9)
 
 density_file = 'dat/density.hdf5'
@@ -20,14 +20,14 @@ coords = np.zeros(coords_init.shape)
 coords[:,2] = np.sort(coords_init[:,2])
 #test_2(Rh, coords, a, b, plot=True)
 
-X = np.linspace(-2*Rh, 2*Rh, 500)
+X = np.linspace(-2*Rh, 2*Rh, 800)
 coords = np.zeros((X.shape[0], 3))
 coords[:,2] = X
 #test_2(Rh, coords, a, b, plot=True)
 
 #coords = fem.prolate_to_cart(Rh, helfem_grid)
-test(coords, amin, amax, Rh, Z1, Z2, sigmas, plot=True)
-
+val = test(amin, amax, Rh, Z1, Z2, sigmas)
+print(val)
 
 exit()
 

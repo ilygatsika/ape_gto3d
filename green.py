@@ -18,8 +18,9 @@ Green's function term
 """
 
 # Parameters for partition overlap 
-amin = 0.5
+amin = 0.1 # if we put larger, such as 0.5, the constant C_P exploses
 amax = 0.8 # max 0.9
+sigmas = (3, 3, 3, 9)
 # Parameters for spectral decomposition
 nmax = 4 # lmax <= 15 due to PySCF
 shift = 4.0 # 3.80688477
@@ -274,13 +275,14 @@ estim_tot = 2 * (estim_atom + 1./eigval_max * (estim_atom_L2 - estim_atom_1) + e
 
 print("Total estimator (without constants)", estim_tot)
 
-"""
-TODO calculate constants
+# Now we calculate constants
+X = np.linspace(-2*Rh, 2*Rh, 500)
+coords = np.zeros((X.shape[0], 3))
+coords[:,2] = X
+val_sup = pou.eval_supremum(a, b, Rh, Z1, Z2, sigmas)
 
-Calculer explicitement les Delta et Grad de p_k qui est une fonction explicite
-la partie radiale est nulle et après le sup sur la grille
-
-""" 
+#coords = fem.prolate_to_cart(Rh, helfem_grid)
+test(coords, amin, amax, Rh, Z1, Z2, sigmas, plot=True)
 
 #estim_Delta_dual = 0.13541234253547357
 
