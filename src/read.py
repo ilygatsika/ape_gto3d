@@ -35,11 +35,9 @@ def diatomic_energy(filename):
     Efem_kin = np.array(f2["Ekin"]) 
     Efem_nuc = np.array(f2["Enuc"]) 
     Efem_nucr = np.array(f2["Enucr"])
-    #T = np.array(f2["T"])
-    #S = np.array(f2["S"])
-    #H0 = np.array(f2["H0"])
+    E2 = np.array(f2['Ea'])[0][1]
 
-    return (Efem, Efem_kin, Efem_nuc, Efem_nucr)
+    return (Efem, E2, Efem_kin, Efem_nuc, Efem_nucr)
 
 def atomic_energy(filename, lmax):
     """

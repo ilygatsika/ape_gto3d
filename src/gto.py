@@ -39,9 +39,10 @@ def build_gto_sol(Rh, basis):
     E_gto = E_gto_tot - mol.energy_nuc()
     
     # Excited states (10 for H2)
-    E_gto_excited = myhf.mo_energy[0]
+    #E_gto_excited = myhf.mo_energy[0]
     
-    return (mol, E_gto, C, E_gto_excited)
+    #return (mol, E_gto, C, E_gto_excited)
+    return (mol, E_gto, C)
 
 def build_Delta(mol, coords, C):
     """

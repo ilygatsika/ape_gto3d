@@ -6,7 +6,8 @@ import src.read as read
 import src.gto as gto
 import src.fem as fem
 import src.partition as pou
-import pymp
+import src.norm as norm
+import matplotlib.pyplot as plt
 
 """
 Test suite
@@ -15,17 +16,13 @@ Test suite
 # Constants
 lebedev_order = 13
 lmax = 6
-ncores = 8
-
-def inner_projection(u1, u2, dV):
-    return np.sum(u1 * u2 * dV)
 
 def tfunc(r):
     """
     Trial function to test
-    Source: PyLebedev package
-    
-    Adapted from: https://cbeentjes.github.io/files/Ramblings/QuadratureSphere.pdf
+
+    Source: PyLebedev package 
+    Adapted directly from: pylebedev/tests/test_lebedev_quadrature.py
     
     This function has the exact result upon integration over a unit sphere
     of 216/35 * pi
@@ -36,7 +33,7 @@ class Test(unittest.TestCase):
 
     def test_lebedev(self):
         """
-        Test Lebedev quadrature for probe function
+        Test Lebedev quadrature accuracy for probe function on 1-sphere
         """
 
         # build quadrature
@@ -70,6 +67,27 @@ class Test(unittest.TestCase):
             n = A.shape[0]
             np.testing.assert_almost_equal(A, np.eye(n))
 
+        # Plot the radial part of eigenvalues
+        plt.plot(r_rad, r_rad**2*orbs_rad[0][0]**2, label='1s')
+        plt.plot(r_rad, r_rad**2*orbs_rad[0][1]**2, label='2s')
+        plt.plot(r_rad, r_rad**2*orbs_rad[0][2]**2, label='3s')
+        plt.plot(r_rad, r_rad**2*orbs_rad[0][3]**2, label='4s')
+        plt.xlabel("r")
+        plt.ylabel(r"$r^2\phi$")
+        #plt.xlim(0, 10)
+        plt.legend()
+        plt.savefig("img/s_hydrogen.pdf")
+        plt.close()
+
+        plt.plot(r_rad, r_rad**2*orbs_rad[1][1]**2, label='2px')
+        plt.plot(r_rad, r_rad**2*orbs_rad[1][2]**2, label='3px')
+        plt.plot(r_rad, r_rad**2*orbs_rad[1][3]**2, label='4px')
+        plt.xlabel("r")
+        plt.ylabel(r"$r^2\phi$")
+        #plt.xlim(0, 20)
+        plt.legend()
+        plt.savefig("img/px_hydrogen.pdf")
+        plt.close()
 
     def test_spherical_harmonics(self):
         """
@@ -115,24 +133,14 @@ class Test(unittest.TestCase):
         
         # Normalised Gaussian function
         f = lambda x: pow(1./np.pi, 3/2) * np.exp(-(x[0]**2 + x[1]**2 + x[2]**2))
+        f_vec = lambda x_vec: np.array([f(x) for x in x_vec])
+        
         # Coulomb potential centered at zero
-        V = lambda x: 1./np.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
+        kernel = lambda x: 1./np.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
 
-        # Evaluate 3D integral on y
-        f_y_1 = pymp.shared.array(ncoords, dtype=float)
-        with pymp.Parallel(ncores) as p:
-            for i in p.range(ncoords):
-
-                y = coords[i]
-
-                # Evaluate 3D integral on z
-                f_z_1 = np.array([f(y+z) for z in coords])
-                f_z_2 = np.array([V(z) for z in coords])
-                f_y_1[i] = inner_projection(f_z_1, f_z_2, dV)
-
-        f_y_2 = np.array([f(y) for y in coords])
-        integral = inner_projection(f_y_1, f_y_2, dV)
-
+        # Compute <f, Delta^{-1} f>
+        integral = norm.green_inner(f_vec, kernel, coords, dV)
+        
         # Exact value from Helgaker (bielectronic integral)
         a = 0.5 # a = pq/(p+q), p=q=1
         exact = np.sqrt(4*a/np.pi)

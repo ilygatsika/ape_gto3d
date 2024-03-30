@@ -1,240 +1,144 @@
-from math import exp, log
-import numpy as np
-import h5py
-import matplotlib.pyplot as plt
 import src.fem as fem
-
-#from src.partition import partition_vec
 import src.read as read
-
-# Deactivate PySCF error message
-from pyscf import __config__
-setattr(__config__, 'B3LYP_WITH_VWN5', True)
-from pyscf import gto, dft
-from pyscf.symm import sph
-from pyscf.solvent import ddcosmo
+import src.gto as gto
+import src.partition as pou
+import src.norm as norm
+from pyscf import dft
+import numpy as np
+import matplotlib.pyplot as plt
+import pymp
 
 """
-Main code for H-norm error estimation using practical and guaranteed estimators
+Green's function term
+* automatiser les tests pour lancer sur le cluster
 """
+
+# Parameters for partition overlap 
+amin = 0.1 # if we put larger, such as 0.5, the constant C_P exploses
+amax = 0.8 # max 0.9
+sigmas = (3, 3, 3, 9)
+# Parameters for spectral decomposition
+lmax = 6 # lmax <= 15 due to PySCF
+lebedev_order = 13
+shift = 4.0 # 3.80688477
+basis = 'aug-cc-pvtz' # GTO basis set
 
 # Input files
 density_file = 'dat/density_small.hdf5'
 helfem_res_file = 'dat/helfem_small.chk'
+atom_file = 'dat/1e_lmax20_Rmax1_4.chk'
 
-# Read data
+# Read data Diatomic
 dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
-Efem, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
 
-# Efem = Efem_kin + Efem_nuc + Efem_nucr
-
-####################
-# Helper functions #
-####################
 def inner_projection(u1, u2, dV=dV):
-
     return np.sum(u1 * u2 * dV)
 
-# real_sph_vec(r, lmax, reorder_p=False)
-# Real spherical harmonics up to the angular momentum lmax
-# spherical harmonics are calculated in PySCF using cartesian to spherical trans
-lmax = 2
-lebedev_order = 7
-#gen_atomic_grids(prune=None)
-coords_1sph, weights_1sph = ddcosmo.make_grids_one_sphere(lebedev_order)
-# coords_1sph contains points (x,y,z) on the unit sphere
-print(np.linalg.norm(coords_1sph, axis=1))
-print(np.linalg.norm(coords_1sph, axis=1).shape)
-
-print(coords_1sph.shape)
-print(weights_1sph.shape)
-
-def evaluate_sph(f,r,phi,theta):
-    
-    g1 = r * np.sin(phi) * np.cos(theta)
-    g2 = r * np.sin(phi) * np.sin(theta)
-    g3 = r * np.cos(phi)
-
-    return (lambda phi, theta: f(gr,gphi,gtheta))
-
+# Transfrom HelFEM grid to cart
 coords = fem.prolate_to_cart(Rh, helfem_grid)
-ylms = sph.real_sph_vec(coords_1sph, lmax, True)
-ylm_1sph = np.vstack(ylms)
-print(ylm_1sph.shape)
+ncoords = coords.shape[0]
+print("coords shape", coords.shape)
 
-# TODO
-# Pour obtenir la grille il faut lancer le calcul 1e et puis dans helfem.chk
-# il faut multiplier les coordonnées par le radius
-# waiting for vec_r from Susi
-'''
-p = partition_vec(vec_r, a, b)
-for i in range(n):
-    r = vec_r[i]
-    grid = r * coords_1sph
-    # angular quadrature for each r
-'''
+# Reference FEM solution from HelFEM
+Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
+Efem -= Efem_nucr
+# shift
+Efem += shift
+E2 += shift
 
-mu, phi, cth = helfem_grid 
-# Test equation 22
-dV_test = np.power(Rh, 3) * np.sinh(mu) * (np.cosh(mu)**2 - cth**2) * wquad
-print(all(np.isclose(dV.flatten(), dV_test.flatten())))
+print(Efem)
 
-# Sth is sinus nu (nu is theta)
-sth = np.sqrt(1 - cth * cth)
+# Approximate GTO solution from PySCF
+mol, E_gto, C = gto.build_gto_sol(Rh, basis) 
+ao_value = dft.numint.eval_ao(mol, coords)
+u_gto = ao_value @ C
+# Shift
+E_gto += shift
+# H(-X) = E(-X) par convention on prend la positive
+flag = ( inner_projection(u_fem, u_gto) < 0 )
 
-# Coulomb potential without singularity in (mu,nu) coordinates
-V_Coulomb = (Z1 + Z2) * np.cosh(mu) + (Z2 - Z1) * cth
-dV_pot = V_Coulomb * np.sinh(mu) * wquad
+# Constant of Assumption 3
+cH = 1./Efem
+# Gap constants for the first eigenvalue
+c1 = (1 - E_gto / E2)**2 # equation 3.3, C_tilde
+c2 = (1 - E_gto / E2)**2 * E2 # equation 3.4, C_hat
 
-# Debug : this should reproduce results of Nuclear repulsion from diatomic
-val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_fem, dV=dV_pot)
-print("Debug fem fem pot", np.isclose(val_pot,  Efem_nuc))
+print('cH=',cH)
+print('c1=',c1)
+print('c2=',c2)
 
-# Reference energy with FEM
-E_fem = Efem_kin + Efem_nuc
-print(E_fem) 
+# Constant associated to partition (equation 1.3)
+val_sup = pou.eval_supremum(amin, amax, Rh, Z1, Z2, sigmas)
+cP = 1 + cH**2 * val_sup
+print('cP=', cP)
 
-# Transform prolate spheroidal coordinates to cartesian
-X = Rh * np.sinh(mu) * sth * np.cos(phi)
-Y = Rh * np.sinh(mu) * sth * np.sin(phi)
-Z = Rh * np.cosh(mu) * cth
+# error should be 1.28e-01
+print(basis, "eigenvalue", Efem, E_gto, "error", abs(Efem - E_gto))
 
 
-coords = np.zeros((X.shape[1], 3))
-coords[:,0] = X
-coords[:,1] = Y
-coords[:,2] = Z
-
-print(X.shape)
-
-# Devrait être 1
-print("fem fem ", inner_projection(u_fem, u_fem) )
-
-# pc is polarization consistent
-"""bases = ["cc-pvdz", "unc-cc-pvdz", "unc-cc-pvtz", "pc-1", "unc-pc-1",
-         "pc-2", "unc-pc-2", "cc-pvtz", "aug-cc-pvdz", "aug-cc-pvtz",
-         "aug-cc-pvqz", "cc-pvqz", "cc-pv5z", "aug-cc-pv5z", "pc-3", "pc-4",
-         "aug-pc-3", "aug-pc-4", "unc-pc-4"]
 """
-bases = ["cc-pvdz"]
-
-err_eigval = []
-err_eigvec_L2 = []
-err_eigvec_H = []
-bas_size = []
-
-for basis in bases: 
-
-    print("\n", basis)
-    mol = gto.M(atom=f'H 0 0 {-Rh}; H 0 0 {Rh}', unit='bohr', charge=1, spin=1,
-            basis=basis, verbose=0)
-    myhf = mol.UHF()
-    myhf.run()
-    E_gto_tot = myhf.kernel()
-    bas_size.append(mol.nbas)
-
-    C = myhf.mo_coeff[0][:,0]
-    
-    # Debug
-    S = myhf.get_ovlp()
-    Smo = C.T @ S @ C
-    print("Debug electron number", np.isclose(Smo, 1.0))
-
-    # Returns array of shape (N,nao)
-    ao_value = dft.numint.eval_ao(mol, coords)
-    #print(ao_value.shape)
-    u_gto = ao_value @ C
-
-    # H(-X) = E(-X) par convention on prend la positive
-    if inner_projection(u_fem, u_gto) < 0 :
-        u_gto = - u_gto 
-
-    # Returns array of shape (M,N,nao)
-    # where N number of grids, nao number of AOs, M=10 for deriv=2
-    # the first (N,nao) elements are the AO values, followed by
-    # 2nd derivatives (6,N,nao) for xx, xy, xz, yy, yz, zz
-    lapl_ao = dft.numint.eval_ao(mol, coords, deriv=2)
-    u_Delta_gto = (lapl_ao[4] + lapl_ao[7] + lapl_ao[9]) @ C
-    Ekin = - 0.5 * inner_projection(u_gto, u_Delta_gto)
-
-    # Compute residual
-    # coordinates should be given by the radian part
-    
-    #res_gto = E_gto * u_gto - (u_Delta_gto - V*u_gto)
-    
-
-    # reference kinetic energy from PySCF
-    T = mol.intor_symmetric('int1e_kin')
-    Ekin_ref = C.T @ T @ C
-
-    print("Debug kinetic", np.isclose(np.abs(Ekin_ref), np.abs(Ekin)))
-
-    # Debug electron-nuclear attraction for gto vs gto
-    Enuc = - np.power(Rh,2) * inner_projection(u_gto, u_gto, dV=dV_pot)
-
-    # reference potential from PySCF
-    V = mol.intor('int1e_nuc')
-    Enuc_ref = C.T @ V @ C
-    #print("Debug potential", np.isclose(Enuc_ref, Enuc))
-
-    #print("Tot gto", -(Ekin - Enuc), E_gto_tot - mol.energy_nuc())
-    #print("Tot fem", E_fem)
-
-    # Si la grille FEM est ok les deux devraient etre 1
-    #print("gto gto ", inner_projection(u_gto, u_gto) )
-    #print("fem fem ", inner_projection(u_fem, u_fem) )
-
-    # Si proche de 1 l'approximation est bonne
-    # norme de la différence en carrée avec L2
-    # integral \langle u_fem, u_gto\rangle
-    err_l2 = inner_projection(u_gto,u_gto) + inner_projection(u_fem, u_fem) - \
-            2*inner_projection(u_fem, u_gto)
-    print("Erreur u_fem - u_gto en norme L2  %.2e" % err_l2 )
-
-    # Laplacian term
-    # integral \langle u_fem, Delta u_gto\rangle
-    val_Delta = -0.5 * inner_projection(u_fem, u_Delta_gto)
-    #print("Laplacian term ", val_Delta)
+Laplacian estimator
+takes some time
+"""
 
 
-    # Potential V (Coulomb)
-    val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_gto, dV=dV_pot)
-    #print("Potential term ", val_pot)
+# Green's function of the screened Laplacian operator
+alpha = np.sqrt(shift)
+kernel = lambda x: 1./(4*np.pi) * \
+        np.exp(-alpha * (x[0]**2 + x[1]**2 + x[2]**2))/np.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
+# integrand
+p_res = lambda xv: np.sqrt(pou.partition_compl(Rh, xv, amin, amax)) * \
+        gto.residual(mol, xv, C, E_gto, Rh, Z1, Z2, flag, shift)
 
-    # Get GTO total energy
-    E_gto = - (Ekin - Enuc)
-
-    err_H = E_fem + E_gto - 2*( - val_Delta + val_pot)
-    print("Erreur u_fem - u_gto en norme H %.2e" % err_H )
-    print(E_fem, E_gto)
-    print("Erreur on eigenvalue %.2e" % abs(E_fem - E_gto))
-
-    # Store results to lists
-    err_eigval.append(abs(E_fem - E_gto))
-    err_eigvec_L2.append(np.sqrt(err_l2))
-    err_eigvec_H.append(np.sqrt(err_H))
-
-# Sort regarding eigval error
-idx = np.argsort(err_eigval)[::-1]
-err_eigval = [err_eigval[i] for i in idx]
-err_eigvec_L2 = [err_eigvec_L2[i] for i in idx]
-err_eigvec_H = [err_eigvec_H[i] for i in idx]
-bases = [bases[i] for i in idx]
-bas_size = [bas_size[i] for i in idx]
-
-# Plot error convergence
-ntest = len(bases)
-labels = [str(bas_size[i]) + ' (' + bases[i] + ')' for i in range(ntest)]
-plt.xticks(np.arange(ntest), labels, rotation=45, fontsize=8, ha='right', rotation_mode='anchor')
-plt.plot(err_eigval, 'o-', label=r"$|\lambda_1 - \lambda_{1N}|$")
-plt.plot(err_eigvec_L2, 'x-', label=r"$u_1 - u_{1N}$ in L2")
-plt.plot(err_eigvec_H, '^-', label=r"$u_1 - u_{1N}$ in H")
-plt.yscale("log")
-plt.legend()
-plt.tight_layout()
-plt.savefig("img/norms.pdf")
-plt.close()
+estim_Delta = norm.green_inner(p_res, kernel, coords, dV)
 
 
+#estim_Delta = 0.21493942891276085 
+
+print('estim_Delta=',estim_Delta)
+
+"""
+Atomic estimator
+"""
+
+# Read data atomic
+E_atom, orbs_rad, r_rad, w_rad = read.atomic_energy(atom_file, lmax)
+
+# Partition of unity evaluated on radial part
+g = np.sqrt(pou.partition_vec(r_rad, amin, amax))
+# residual
+f = lambda xv: gto.residual(mol, xv, C, E_gto, Rh, Z1, Z2, flag, shift)
+
+eigpairs = (E_atom, orbs_rad)
+rad_grid = (r_rad, w_rad)
+estim_atom = norm.atom_inner(f, g, eigpairs, rad_grid, lebedev_order, lmax, shift)
+
+r1 = 2*estim_atom + estim_Delta
+
+# Now multiply by constants according to Theorem 3
+# C is cP
+# C tilde is c1
+# C hat is c2.7
+final_estim = pow(cP * 1./c1 * r1 + Efem * cP**2 * 1./c2**2 * r1**2, 0.5)
+print("Estimator of Theorem 3.7=", final_estim)
+
+# True Hnorm error
+# Laplacian term
+lapl_ao = dft.numint.eval_ao(mol, coords, deriv=2)
+u_Delta_gto = (lapl_ao[4] + lapl_ao[7] + lapl_ao[9]) @ C
+val_Delta = inner_projection(u_fem, u_Delta_gto)
+# Potential V (Coulomb)
+dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
+val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_gto, dV=dV_pot)
+# Convention to take positive
+if flag : 
+    u_Delta_gto = - u_gto 
+    u_gto = - u_gto 
+
+# Hnorm 
+err_H = np.sqrt(Efem + E_gto - 2*( - 0.5 * val_Delta - val_pot + shift))
+#err_H = norm.H_norm()
+
+print("True error (H norm)", err_H)
 
 

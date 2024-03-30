@@ -16,18 +16,12 @@ Usage
     directory. The parameters of diatomic_1e are obtained from diatomic_cbasis.
     See dat/helfem_script.txt.
 
-Requires
+    Plot results with
+
+        >>> python3 plot.py
+
+Interface with
 
     PySCF (https://github.com/pyscf/pyscf)
     HelFEM (https://github.com/susilehtola/HelFEM)
-
-TODO 
-
-    [OK] ce code va être dans un répertoire git
-    [*] solve bug on H-norm error formula
-    [*] obtain atomic operator eigenvectors (understand R_nl)
-    [*] use the spherical harmonics from PySCF
-    [*] obtain radial part of eigenfunctions evaluated on FEM grid 
-    [*] test precision of lebedev quadrature on sphere
-
 
