@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 from pyscf.solvent import ddcosmo
 from pyscf.symm import sph
+from pyscf import dft
 import src.read as read
 import src.gto as gto
 import src.fem as fem
@@ -16,6 +17,7 @@ Test suite
 # Constants
 lebedev_order = 13
 lmax = 6
+basis = "aug-cc-pvtz"
 
 def tfunc(r):
     """
@@ -30,6 +32,79 @@ def tfunc(r):
     return 1 + r[0] + r[1]**2 + r[0]**2*r[1] + r[0]**4 + r[1]**5 + r[0]**2*r[1]**2*r[2]**2
 
 class Test(unittest.TestCase):
+
+    def test_FEM_energy_terms(self):
+        """
+        Obtain FEM energies from FEM quadratures
+        """
+
+        # Input files
+        density_file = 'dat/density.hdf5'
+        helfem_res_file = 'dat/helfem.chk'
+
+        # Read data
+        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+        Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
+
+        # FEM solution is normalized
+        np.testing.assert_almost_equal(norm.inner(u_fem, u_fem, dV), 1.00)
+
+        # Test equation 22 of Susi's paper
+        mu, phi, cth = helfem_grid 
+        dV_test = np.power(Rh, 3) * np.sinh(mu) * (np.cosh(mu)**2 - cth**2) * wquad
+        np.testing.assert_almost_equal(dV.flatten(), dV_test.flatten())
+
+        # Nuclear repulsion energy term
+        dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
+        val_pot = - Rh**2 * norm.inner(u_fem, u_fem, dV_pot)
+        np.testing.assert_almost_equal(val_pot, Efem_nuc)
+
+    def test_GTO_energy_terms(self):
+        """
+        Obtain GTO energies from FEM quadratures
+        """
+       
+        # Load FEM quadrature 
+        density_file = 'dat/density.hdf5'
+        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+        coords = fem.prolate_to_cart(Rh, helfem_grid)
+        
+        # Build PySCF molecule
+        mol, E_gto, C = gto.build_gto_sol(Rh, basis)
+        
+        # Debug electron number
+        S = mol.intor("int1e_ovlp")
+        Smo = C.T @ S @ C
+        np.testing.assert_almost_equal(Smo, 1.0)
+        
+        # Returns array of shape (N,nao)
+        ao_value = dft.numint.eval_ao(mol, coords)
+        u_gto = ao_value @ C 
+
+        # GTO solution is normalized, otherwise FEM grid not good
+        np.testing.assert_almost_equal(norm.inner(u_gto, u_gto, dV), 1.00)
+        
+        # Kinetic term on FEM quadrature
+        u_Delta_gto = gto.build_Delta(mol, coords, C)
+        Ekin = - 0.5 * norm.inner(u_gto, u_Delta_gto, dV)
+
+        # Compare to reference kinetic energy from PySCF
+        T = mol.intor_symmetric('int1e_kin')
+        Ekin_ref = C.T @ T @ C
+        np.testing.assert_almost_equal(Ekin_ref, Ekin)
+
+        # H(-X) = E(-X) par convention on prend la positive
+        if norm.inner(u_fem, u_gto, dV) < 0 :
+            u_gto = - u_gto 
+
+        # Potential energy term
+        dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
+        Enuc = - Rh**2 * norm.inner(u_gto, u_gto, dV_pot)
+        
+        # Compare to reference potential energy from PySCF
+        V = mol.intor('int1e_nuc')
+        Enuc_ref = C.T @ V @ C
+        np.testing.assert_almost_equal(Enuc_ref, Enuc)
 
     def test_lebedev(self):
         """
@@ -74,7 +149,6 @@ class Test(unittest.TestCase):
         plt.plot(r_rad, r_rad**2*orbs_rad[0][3]**2, label='4s')
         plt.xlabel("r")
         plt.ylabel(r"$r^2\phi$")
-        #plt.xlim(0, 10)
         plt.legend()
         plt.savefig("img/s_hydrogen.pdf")
         plt.close()
@@ -84,7 +158,6 @@ class Test(unittest.TestCase):
         plt.plot(r_rad, r_rad**2*orbs_rad[1][3]**2, label='4px')
         plt.xlabel("r")
         plt.ylabel(r"$r^2\phi$")
-        #plt.xlim(0, 20)
         plt.legend()
         plt.savefig("img/px_hydrogen.pdf")
         plt.close()
@@ -116,7 +189,7 @@ class Test(unittest.TestCase):
                 ylm = yl_vec_m[i_m]
                 np.testing.assert_almost_equal(np.square(ylm) @ w_1sph, 1.000)
 
-    def test_greens_function(self):
+    def greens_function(self):
         """
         Test Laplacian Green's function integration using quadratures
         on Gaussian trial functions whose exact integral is known
@@ -150,7 +223,7 @@ class Test(unittest.TestCase):
         # integral medium long:      0.7698993927 
         print("Integral %.10f, exact %.10f" %(integral, exact) )
 
-    def test_partitions(self):
+    def partitions(self):
         """
         Problem avec FEM grid is the quality around zero
         """

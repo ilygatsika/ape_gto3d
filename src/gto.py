@@ -49,7 +49,12 @@ def build_Delta(mol, coords, C):
     Compute Laplacian(u_gto)
     """
 
+    # Returns array of shape (M,N,nao)
+    # where N number of grids, nao number of AOs, M=10 for deriv=2
+    # the first (N,nao) elements are the AO values, followed by
+    # 2nd derivatives (6,N,nao) for xx, xy, xz, yy, yz, zz
     lapl_ao = dft.numint.eval_ao(mol, coords, deriv=2)
+
     u_Delta_gto = (lapl_ao[4] + lapl_ao[7] + lapl_ao[9]) @ C
 
     return u_Delta_gto

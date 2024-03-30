@@ -14,6 +14,7 @@ def prolate_to_cart(Rh, helfem_grid):
     # Sth is sinus nu (nu is theta)
     sth = np.sqrt(1 - cth * cth)
 
+    # Convert spherical (r, phi, theta) to cart (x,y,z)
     X = Rh * np.sinh(mu) * sth * np.cos(phi)
     Y = Rh * np.sinh(mu) * sth * np.sin(phi)
     Z = Rh * np.cosh(mu) * cth

@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import pymp
 
 """
-Green's function term
-* automatiser les tests pour lancer sur le cluster
+Main code for H-norm error estimation using practical and guaranteed estimators
+Estimator is Theorem 3.7
 """
 
 # Parameters for partition overlap 
