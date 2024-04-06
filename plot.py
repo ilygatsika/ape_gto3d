@@ -7,7 +7,7 @@ import src.fem as fem
 import src.norm as norm
 
 #from src.partition import partition_vec
-import src.read as read
+import src.utils as utils
 
 # Deactivate PySCF error message
 from pyscf import __config__
@@ -24,8 +24,8 @@ density_file = 'dat/density_small.hdf5'
 helfem_res_file = 'dat/helfem_small.chk'
 
 # Read data
-dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
-Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
+dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
+Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = utils.diatomic_energy(helfem_res_file)
 
 coords = fem.prolate_to_cart(Rh, helfem_grid)
 dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)

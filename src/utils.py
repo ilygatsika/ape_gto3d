@@ -1,8 +1,11 @@
+import _pickle as cpickle
 import h5py
 import numpy as np
 
 """
-Routines for reading FEM solution data from HelFEM output files
+Read and write routines
+* routines for reading FEM solution data from HelFEM output files
+* routines for writing results to pickle
 """
 
 def diatomic_density(filename):
@@ -60,4 +63,29 @@ def atomic_energy(filename, lmax):
     wr = np.array(f3["wr"]).flatten()
 
     return (E, orbs, r, wr)
+
+def store_to_file(outfile, key, res):
+    """
+    Append existing dictionary in outfile 
+    with key and res
+    """ 
+    try:
+        # Add to entry if file exists 
+        with open(outfile, 'rb') as file:
+            dic = cpickle.load(file)
+            
+            if key in dic:
+                # append to entry
+                cur_res = dic[key]
+                cur_res.update(res)
+                dic[key] = cur_res
+            else:
+                # create new entry
+                dic[key] = res
+    except:
+        # Create new dictionary
+        dic = {key : res}
+
+    with open(outfile, 'wb') as file:
+        cpickle.dump(dic, file)
 
