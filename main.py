@@ -1,35 +1,38 @@
 import src.fem as fem
-import src.read as read
+import src.utils as utils
 import src.gto as gto
 import src.partition as pou
 import src.norm as norm
 from pyscf import dft
 import numpy as np
-import matplotlib.pyplot as plt
 import pymp
+import sys
 
 """
 Main code for H-norm error estimation using practical and guaranteed estimators
 Estimator is Theorem 3.7
 """
 
+# Options
+basis = str(sys.argv[1]) # GTO basis set
+resfile = str(sys.argv[2]) # file to store results
+
 # Parameters for partition overlap 
 amin = 0.1 # if we put larger, such as 0.5, the constant C_P exploses
 amax = 0.8 # max 0.9
-sigmas = (3, 3, 3, 9)
+shift = 4.0 # 3.80688477
+sigmas = (3, 3, 3, shift)
 # Parameters for spectral decomposition
 lmax = 6 # lmax <= 15 due to PySCF
 lebedev_order = 13
-shift = 4.0 # 3.80688477
-basis = 'aug-cc-pvtz' # GTO basis set
 
 # Input files
-density_file = 'dat/density_small.hdf5'
-helfem_res_file = 'dat/helfem_small.chk'
+density_file = 'dat/density.hdf5'
+helfem_res_file = 'dat/helfem.chk'
 atom_file = 'dat/1e_lmax20_Rmax1_4.chk'
 
 # Read data Diatomic
-dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
 
 def inner_projection(u1, u2, dV=dV):
     return np.sum(u1 * u2 * dV)
@@ -40,7 +43,7 @@ ncoords = coords.shape[0]
 print("coords shape", coords.shape)
 
 # Reference FEM solution from HelFEM
-Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
+Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = utils.diatomic_energy(helfem_res_file)
 Efem -= Efem_nucr
 # shift
 Efem += shift
@@ -102,7 +105,7 @@ Atomic estimator
 """
 
 # Read data atomic
-E_atom, orbs_rad, r_rad, w_rad = read.atomic_energy(atom_file, lmax)
+E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(atom_file, lmax)
 
 # Partition of unity evaluated on radial part
 g = np.sqrt(pou.partition_vec(r_rad, amin, amax))
@@ -140,5 +143,25 @@ err_H = np.sqrt(Efem + E_gto - 2*( - 0.5 * val_Delta - val_pot + shift))
 #err_H = norm.H_norm()
 
 print("True error (H norm)", err_H)
+
+# Store results to file
+data = {}
+data["err_H"] = err_H
+data["estimator"] = final_estim
+# parameters
+data["amin"] = amin
+data["amax"] = amax
+data["shift"] = shift
+data["shift1"] = sigmas[0] 
+data["shift2"] = sigmas[1] 
+data["shift3"] = sigmas[2] 
+data["lmax"] = lmax
+data["lebedev_order"] = lebedev_order
+data["density_file"] = density_file
+data["helfem_res_file"] = helfem_res_file
+data["atom_file"] = atom_file
+key = basis
+utils.store_to_file(resfile, key, data)
+
 
 

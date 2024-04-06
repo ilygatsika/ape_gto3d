@@ -3,7 +3,7 @@ import numpy as np
 from pyscf.solvent import ddcosmo
 from pyscf.symm import sph
 from pyscf import dft
-import src.read as read
+import src.utils as utils
 import src.gto as gto
 import src.fem as fem
 import src.partition as pou
@@ -43,8 +43,8 @@ class Test(unittest.TestCase):
         helfem_res_file = 'dat/helfem.chk'
 
         # Read data
-        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
-        Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = read.diatomic_energy(helfem_res_file)
+        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
+        Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = utils.diatomic_energy(helfem_res_file)
 
         # FEM solution is normalized
         np.testing.assert_almost_equal(norm.inner(u_fem, u_fem, dV), 1.00)
@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
        
         # Load FEM quadrature 
         density_file = 'dat/density.hdf5'
-        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
         coords = fem.prolate_to_cart(Rh, helfem_grid)
         
         # Build PySCF molecule
@@ -134,7 +134,7 @@ class Test(unittest.TestCase):
         """
 
         atom_file = 'dat/1e_lmax20.chk'
-        eigval_H, orbs_rad, r_rad, w_rad = read.atomic_energy(atom_file, lmax)
+        eigval_H, orbs_rad, r_rad, w_rad = utils.atomic_energy(atom_file, lmax)
     
         dV_rad = np.diag(np.multiply(np.square(r_rad), w_rad))
         for l in range(lmax+1):
@@ -200,7 +200,7 @@ class Test(unittest.TestCase):
         """
 
         density_file = 'dat/density_small.hdf5'
-        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
         coords = fem.prolate_to_cart(Rh, helfem_grid)
         ncoords = coords.shape[0]
         
@@ -233,7 +233,7 @@ class Test(unittest.TestCase):
 
         # HelFEM grid
         density_file = 'dat/density.hdf5'
-        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = read.diatomic_density(density_file)
+        dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
         coords_init = fem.prolate_to_cart(Rh, helfem_grid)
         print(coords_init.shape)
         coords = np.zeros(coords_init.shape)
