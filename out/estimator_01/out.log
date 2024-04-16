@@ -1,0 +1,136 @@
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.038837217275963794
+c2= 0.13157738606911767
+cP= 2.82467950856205
+cc-pvdz eigenvalue 2.7157307576575995 2.7202571888186657 error 0.004526431161066213
+estim_Delta= 0.21564569056620553
+Estimator of Theorem 3.7= 9.448831645895003
+True error (H norm) 1.7370623128161367
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.03905350387790043
+c2= 0.1323101477786495
+cP= 2.82467950856205
+unc-cc-pvdz eigenvalue 2.7157307576575995 2.7184006444804885 error 0.002669886822888934
+estim_Delta= 0.21715011903509226
+Estimator of Theorem 3.7= 9.482884762473892
+True error (H norm) 1.754704059986157
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.039305999788612274
+c2= 0.13316558373042062
+cP= 2.82467950856205
+unc-cc-pvtz eigenvalue 2.7157307576575995 2.7162397815155837 error 0.0005090238579841255
+estim_Delta= 0.21787679863099182
+Estimator of Theorem 3.7= 9.494038066710532
+True error (H norm) 1.7583293779836902
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.0389418103421127
+c2= 0.1319317390122505
+cP= 2.82467950856205
+pc-1 eigenvalue 2.7157307576575995 2.719358747141554 error 0.0036279894839545967
+estim_Delta= 0.21567130787799216
+Estimator of Theorem 3.7= 9.457466187514234
+True error (H norm) 1.741341780903631
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.039078226438658416
+c2= 0.1323939058372755
+cP= 2.82467950856205
+unc-pc-1 eigenvalue 2.7157307576575995 2.7181887606142094 error 0.002458002956609917
+estim_Delta= 0.21770904683550915
+Estimator of Theorem 3.7= 9.526047214803588
+True error (H norm) 1.7561070496140623
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.03931928054282118
+c2= 0.13321057786353313
+cP= 2.82467950856205
+pc-2 eigenvalue 2.7157307576575995 2.716126317071648 error 0.000395559414048563
+estim_Delta= 0.21733584813030943
+Estimator of Theorem 3.7= 9.473548302148798
+True error (H norm) 1.760209097724532
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.039336354705145064
+c2= 0.13326842375995596
+cP= 2.82467950856205
+unc-pc-2 eigenvalue 2.7157307576575995 2.715980471704235 error 0.0002497140466353187
+estim_Delta= 0.2179663202153197
+Estimator of Theorem 3.7= 9.491844738484561
+True error (H norm) 1.7589962495362106
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'
+coords shape (67500, 3)
+2.7157307576575995
+cH= 0.3682250153776402
+c1= 0.03929452836361641
+c2= 0.1331267194599782
+cP= 2.82467950856205
+cc-pvtz eigenvalue 2.7157307576575995 2.7163378033420917 error 0.0006070456844922134
+estim_Delta= 0.21718022172466211
+Estimator of Theorem 3.7= 9.470173048752962
+True error (H norm) 1.758529054546206
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 164, in <module>
+    utils.store_to_file(resfile, key, data)
+  File "/users/home/lygatsika/code/env/aposteriori/src/utils.py", line 89, in store_to_file
+    with open(outfile, 'wb') as file:
+         ^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'out/estimator_01'

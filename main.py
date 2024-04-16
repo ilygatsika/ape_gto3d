@@ -133,13 +133,15 @@ val_Delta = inner_projection(u_fem, u_Delta_gto)
 # Potential V (Coulomb)
 dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
 val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_gto, dV=dV_pot)
+val_ovlp = inner_projection(u_fem, u_gto)
 # Convention to take positive
 if flag : 
     u_Delta_gto = - u_gto 
     u_gto = - u_gto 
 
 # Hnorm 
-err_H = np.sqrt(Efem + E_gto - 2*( - 0.5 * val_Delta - val_pot + shift))
+err_H = np.sqrt(Efem + E_gto - 2*( - 0.5 * val_Delta - val_pot + shift * \
+                                  val_ovlp))
 #err_H = norm.H_norm()
 
 print("True error (H norm)", err_H)
