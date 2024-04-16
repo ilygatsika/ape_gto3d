@@ -36,3 +36,8 @@ aug-pc-4
 ./example/estimator_01.sh : ligne 11 : 1374683 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 unc-pc-4
 ./example/estimator_01.sh : ligne 11 : 1374905 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+[main 9fd3f84] ljll server results for estimator_01 (fine grid)
+ 2 files changed, 38 insertions(+), 136 deletions(-)
+ create mode 100644 out/estimator_01/res.pickle
+To https://github.com/ilygatsika/aposteriori.git
+   3418857..9fd3f84  main -> main

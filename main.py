@@ -21,14 +21,15 @@ resfile = str(sys.argv[2]) # file to store results
 amin = 0.1 # if we put larger, such as 0.5, the constant C_P exploses
 amax = 0.8 # max 0.9
 shift = 4.0 # 3.80688477
-sigmas = (3, 3, 3, shift)
+shift_inf = 3
+sigmas = (3, 3, shift_inf, shift)
 # Parameters for spectral decomposition
 lmax = 6 # lmax <= 15 due to PySCF
 lebedev_order = 13
 
 # Input files
-density_file = 'dat/density_small.hdf5'
-helfem_res_file = 'dat/helfem_small.chk'
+density_file = 'dat/density.hdf5'
+helfem_res_file = 'dat/helfem.chk'
 atom_file = 'dat/1e_lmax20_Rmax1_4.chk'
 
 # Read data Diatomic
@@ -55,7 +56,8 @@ u_gto = ao_value @ C
 # Shift
 E_gto += shift
 # H(-X) = E(-X) par convention on prend la positive
-if ( inner_projection(u_fem, u_gto) < 0 ):
+flag = inner_projection(u_fem, u_gto)
+if ( flag < 0 ):
     u_gto = - u_gto
 
 # Constant of Assumption 3
@@ -84,15 +86,14 @@ takes some time
 """
 
 # Green's function of the screened Laplacian operator
-alpha = np.sqrt(shift)
+alpha = np.sqrt(shift_inf)
 kernel = lambda x: 1./(4*np.pi) * \
         np.exp(-alpha * (x[0]**2 + x[1]**2 + x[2]**2))/np.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
 # integrand
 p_res = lambda xv: np.sqrt(pou.partition_compl(Rh, xv, amin, amax)) * \
-        gto.residual(mol, xv, C, u_fem, E_gto, dV, Rh, Z1, Z2, shift)
+        gto.residual(mol, xv, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift)
 
 estim_Delta = norm.green_inner(p_res, kernel, coords, dV)
-#estim_Delta= 0.2179663202153197
 
 print('estim_Delta=',estim_Delta)
 
@@ -106,12 +107,11 @@ E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(atom_file, lmax)
 # Partition of unity evaluated on radial part
 g = np.sqrt(pou.partition_vec(r_rad, amin, amax))
 # residual
-f = lambda xv: gto.residual(mol, xv, C, u_fem, E_gto, dV, Rh, Z1, Z2, shift)
+f = lambda xv: gto.residual(mol, xv, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift)
 
 eigpairs = (E_atom, orbs_rad)
 rad_grid = (r_rad, w_rad)
-#estim_atom = norm.atom_inner(f, g, eigpairs, rad_grid, lebedev_order, lmax, shift)
-estim_atom = 1
+estim_atom = norm.atom_inner(f, g, eigpairs, rad_grid, lebedev_order, lmax, shift)
 print('estim_atom=', estim_atom)
 
 r1 = 2*estim_atom + estim_Delta
