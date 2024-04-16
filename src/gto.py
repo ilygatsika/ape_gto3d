@@ -91,10 +91,12 @@ def Coulomb(Rh, Z1, Z2):
 
     return V
 
-def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag, shift):
+def inner_projection(u1, u2, dV):
+    return np.sum(u1 * u2 * dV)
+
+def residual(mol, coord, C, u_fem, E_gto, dV, Rh, Z1, Z2, shift):
     """
     Compute residual of Gaussian discretisation
-    flag controls the sign
     """
 
     # Kinetic term
@@ -104,8 +106,7 @@ def residual(mol, coord, C, E_gto, Rh, Z1, Z2, flag, shift):
     u_gto = ao_value @ C
 
     # Convention to take positive
-    if flag : 
-        u_Delta_gto = - u_gto 
+    if ( inner_projection(u_fem, u_gto, dV) < 0 ):
         u_gto = - u_gto 
 
     # Coulomb term

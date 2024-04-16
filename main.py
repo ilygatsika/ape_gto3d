@@ -27,8 +27,8 @@ lmax = 6 # lmax <= 15 due to PySCF
 lebedev_order = 13
 
 # Input files
-density_file = 'dat/density.hdf5'
-helfem_res_file = 'dat/helfem.chk'
+density_file = 'dat/density_small.hdf5'
+helfem_res_file = 'dat/helfem_small.chk'
 atom_file = 'dat/1e_lmax20_Rmax1_4.chk'
 
 # Read data Diatomic
@@ -44,12 +44,9 @@ print("coords shape", coords.shape)
 
 # Reference FEM solution from HelFEM
 Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = utils.diatomic_energy(helfem_res_file)
-Efem -= Efem_nucr
+Efem = Efem - Efem_nucr + shift
 # shift
-Efem += shift
 E2 += shift
-
-print(Efem)
 
 # Approximate GTO solution from PySCF
 mol, E_gto, C = gto.build_gto_sol(Rh, basis) 
@@ -58,7 +55,8 @@ u_gto = ao_value @ C
 # Shift
 E_gto += shift
 # H(-X) = E(-X) par convention on prend la positive
-flag = ( inner_projection(u_fem, u_gto) < 0 )
+if ( inner_projection(u_fem, u_gto) < 0 ):
+    u_gto = - u_gto
 
 # Constant of Assumption 3
 cH = 1./Efem
@@ -69,6 +67,7 @@ c2 = (1 - E_gto / E2)**2 * E2 # equation 3.4, C_hat
 print('cH=',cH)
 print('c1=',c1)
 print('c2=',c2)
+
 
 # Constant associated to partition (equation 1.3)
 val_sup = pou.eval_supremum(amin, amax, Rh, Z1, Z2, sigmas)
@@ -84,19 +83,16 @@ Laplacian estimator
 takes some time
 """
 
-
 # Green's function of the screened Laplacian operator
 alpha = np.sqrt(shift)
 kernel = lambda x: 1./(4*np.pi) * \
         np.exp(-alpha * (x[0]**2 + x[1]**2 + x[2]**2))/np.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
 # integrand
 p_res = lambda xv: np.sqrt(pou.partition_compl(Rh, xv, amin, amax)) * \
-        gto.residual(mol, xv, C, E_gto, Rh, Z1, Z2, flag, shift)
+        gto.residual(mol, xv, C, u_fem, E_gto, dV, Rh, Z1, Z2, shift)
 
 estim_Delta = norm.green_inner(p_res, kernel, coords, dV)
-
-
-#estim_Delta = 0.21493942891276085 
+#estim_Delta= 0.2179663202153197
 
 print('estim_Delta=',estim_Delta)
 
@@ -110,11 +106,13 @@ E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(atom_file, lmax)
 # Partition of unity evaluated on radial part
 g = np.sqrt(pou.partition_vec(r_rad, amin, amax))
 # residual
-f = lambda xv: gto.residual(mol, xv, C, E_gto, Rh, Z1, Z2, flag, shift)
+f = lambda xv: gto.residual(mol, xv, C, u_fem, E_gto, dV, Rh, Z1, Z2, shift)
 
 eigpairs = (E_atom, orbs_rad)
 rad_grid = (r_rad, w_rad)
-estim_atom = norm.atom_inner(f, g, eigpairs, rad_grid, lebedev_order, lmax, shift)
+#estim_atom = norm.atom_inner(f, g, eigpairs, rad_grid, lebedev_order, lmax, shift)
+estim_atom = 1
+print('estim_atom=', estim_atom)
 
 r1 = 2*estim_atom + estim_Delta
 
@@ -127,22 +125,15 @@ print("Estimator of Theorem 3.7=", final_estim)
 
 # True Hnorm error
 # Laplacian term
-lapl_ao = dft.numint.eval_ao(mol, coords, deriv=2)
-u_Delta_gto = (lapl_ao[4] + lapl_ao[7] + lapl_ao[9]) @ C
-val_Delta = inner_projection(u_fem, u_Delta_gto)
+u_Delta_gto = gto.build_Delta(mol, coords, C)
+val_Delta = - 0.5 * inner_projection(u_fem, u_Delta_gto)
 # Potential V (Coulomb)
 dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
 val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_gto, dV=dV_pot)
-val_ovlp = inner_projection(u_fem, u_gto)
-# Convention to take positive
-if flag : 
-    u_Delta_gto = - u_gto 
-    u_gto = - u_gto 
+val_ovlp = inner_projection(u_gto, u_fem)
 
 # Hnorm 
-err_H = np.sqrt(Efem + E_gto - 2*( - 0.5 * val_Delta - val_pot + shift * \
-                                  val_ovlp))
-#err_H = norm.H_norm()
+err_H = np.sqrt(Efem + E_gto - 2*( - val_Delta + val_pot + shift * val_ovlp))
 
 print("True error (H norm)", err_H)
 
@@ -154,6 +145,14 @@ data["estimator"] = final_estim
 data["amin"] = amin
 data["amax"] = amax
 data["shift"] = shift
+# Estimator constants
+data["cH"] = cH
+data["c1"] = c1
+data["c2"] = c2
+data["cP"] = cP
+# Estimators on domains
+data["estim_atom"] = estim_atom
+data["estim_Delta"] = estim_Delta
 data["shift1"] = sigmas[0] 
 data["shift2"] = sigmas[1] 
 data["shift3"] = sigmas[2] 
@@ -164,6 +163,5 @@ data["helfem_res_file"] = helfem_res_file
 data["atom_file"] = atom_file
 key = basis
 utils.store_to_file(resfile, key, data)
-
 
 
