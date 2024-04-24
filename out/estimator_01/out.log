@@ -1,43 +1,209 @@
 cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1321402 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.038837217275963794
+c2= 0.13157738606911767
+cP= 2.82467950856205
+cc-pvdz eigenvalue 2.7157307576575995 2.7202571888186657 error 0.004526431161066213
+estim_Delta= 0.38237438165625254
+estim_atom= 0.0246740004637856
+Estimator of Theorem 3.7= 16.268883998375024
+True error (H norm) 0.08688160059726849
 unc-cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1370856 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03905350387790043
+c2= 0.1323101477786495
+cP= 2.82467950856205
+unc-cc-pvdz eigenvalue 2.7157307576575995 2.7184006444804885 error 0.002669886822888934
+estim_Delta= 0.3839760378725784
+estim_atom= 0.026032135679763452
+Estimator of Theorem 3.7= 16.3363432342736
+True error (H norm) 0.06248119581301144
 unc-cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1370984 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039305999788612274
+c2= 0.13316558373042062
+cP= 2.82467950856205
+unc-cc-pvtz eigenvalue 2.7157307576575995 2.7162397815155837 error 0.0005090238579841255
+estim_Delta= 0.39170795018903865
+estim_atom= 0.029466420705659475
+Estimator of Theorem 3.7= 16.74896412756277
+True error (H norm) 0.02603255223710489
 pc-1
-./example/estimator_01.sh : ligne 11 : 1371350 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.0389418103421127
+c2= 0.1319317390122505
+cP= 2.82467950856205
+pc-1 eigenvalue 2.7157307576575995 2.719358747141554 error 0.0036279894839545967
+estim_Delta= 0.37898825700545274
+estim_atom= 0.027190914051568076
+Estimator of Theorem 3.7= 16.286031127971125
+True error (H norm) 0.0806543904846511
 unc-pc-1
-./example/estimator_01.sh : ligne 11 : 1371572 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039078226438658416
+c2= 0.1323939058372755
+cP= 2.82467950856205
+unc-pc-1 eigenvalue 2.7157307576575995 2.7181887606142094 error 0.002458002956609917
+estim_Delta= 0.3859956323709944
+estim_atom= 0.028640936036098314
+Estimator of Theorem 3.7= 16.581572163618535
+True error (H norm) 0.06315187079232126
 pc-2
-./example/estimator_01.sh : ligne 11 : 1371794 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03931928054282118
+c2= 0.13321057786353313
+cP= 2.82467950856205
+pc-2 eigenvalue 2.7157307576575995 2.716126317071648 error 0.000395559414048563
+estim_Delta= 0.3838552912943077
+estim_atom= 0.02981885875550914
+Estimator of Theorem 3.7= 16.49338322893736
+True error (H norm) 0.0260359654948203
 unc-pc-2
-./example/estimator_01.sh : ligne 11 : 1372016 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039336354705145064
+c2= 0.13326842375995596
+cP= 2.82467950856205
+unc-pc-2 eigenvalue 2.7157307576575995 2.715980471704235 error 0.0002497140466353187
+estim_Delta= 0.3901955425575924
+estim_atom= 0.029874881156422502
+Estimator of Theorem 3.7= 16.71244692516349
+True error (H norm) 0.0194343609721033
 cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1372238 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03929452836361641
+c2= 0.1331267194599782
+cP= 2.82467950856205
+cc-pvtz eigenvalue 2.7157307576575995 2.7163378033420917 error 0.0006070456844922134
+estim_Delta= 0.3846341117744386
+estim_atom= 0.029245196378889896
+Estimator of Theorem 3.7= 16.49025407879803
+True error (H norm) 0.02959076201722038
 aug-cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1372460 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03883797125588219
+c2= 0.13157994049278057
+cP= 2.82467950856205
+aug-cc-pvdz eigenvalue 2.7157307576575995 2.7202507078969913 error 0.004519950239391779
+estim_Delta= 0.3826471228838052
+estim_atom= 0.024687807117419195
+Estimator of Theorem 3.7= 16.279233760197556
+True error (H norm) 0.08685539750023741
 aug-cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1372682 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03930372184117583
+c2= 0.13315786622668804
+cP= 2.82467950856205
+aug-cc-pvtz eigenvalue 2.7157307576575995 2.7162592451402543 error 0.0005284874826547714
+estim_Delta= 0.3864406071930468
+estim_atom= 0.02912211261726673
+Estimator of Theorem 3.7= 16.541274184657016
+True error (H norm) 0.026955031338825063
 aug-cc-pvqz
-./example/estimator_01.sh : ligne 11 : 1372904 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03934944640095979
+c2= 0.1333127773783492
+cP= 2.82467950856205
+aug-cc-pvqz eigenvalue 2.7157307576575995 2.715868665507659 error 0.00013790785005962647
+estim_Delta= 0.3893344767319555
+estim_atom= 0.030429834087446726
+Estimator of Theorem 3.7= 16.715913483625783
+True error (H norm) 0.013347039625235122
 cc-pvqz
-./example/estimator_01.sh : ligne 11 : 1373126 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03934764877429705
+c2= 0.1333066871629836
+cP= 2.82467950856205
+cc-pvqz eigenvalue 2.7157307576575995 2.715884016565277 error 0.0001532589076775892
+estim_Delta= 0.38943258873656483
+estim_atom= 0.030370313745494325
+Estimator of Theorem 3.7= 16.7159008133739
+True error (H norm) 0.014361230351617469
 cc-pv5z
-./example/estimator_01.sh : ligne 11 : 1373348 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039363567493116626
+c2= 0.1333606185092221
+cP= 2.82467950856205
+cc-pv5z eigenvalue 2.7157307576575995 2.7157480888697547 error 1.7331212155191622e-05
+estim_Delta= 0.3890008946792529
+estim_atom= 0.03038699579398262
+Estimator of Theorem 3.7= 16.695601850132554
+True error (H norm) 0.004688389853453937
 aug-cc-pv5z
-./example/estimator_01.sh : ligne 11 : 1373570 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03936372877776207
+c2= 0.13336116492870187
+cP= 2.82467950856205
+aug-cc-pv5z eigenvalue 2.7157307576575995 2.715746711823567 error 1.59541659674467e-05
+estim_Delta= 0.38898757371723813
+estim_atom= 0.03039705776471991
+Estimator of Theorem 3.7= 16.695775308928194
+True error (H norm) 0.004400356357826859
 pc-3
-./example/estimator_01.sh : ligne 11 : 1373792 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039364569216693006
+c2= 0.13336401226858458
+cP= 2.82467950856205
+pc-3 eigenvalue 2.7157307576575995 2.715739536212646 error 8.778555046440317e-06
+estim_Delta= 0.3888696634491868
+estim_atom= 0.03025118534925611
+Estimator of Theorem 3.7= 16.681113831630284
+True error (H norm) 0.003190215792350862
 pc-4
-./example/estimator_01.sh : ligne 11 : 1374238 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039365179245260666
+c2= 0.13336607899658393
+cP= 2.82467950856205
+pc-4 eigenvalue 2.7157307576575995 2.7157343278778483 error 3.5702202487719603e-06
+estim_Delta= 0.38886393208420017
+estim_atom= 0.03034532400914506
+Estimator of Theorem 3.7= 16.68725385536824
+True error (H norm) 0.0030724399235092033
 aug-pc-3
-./example/estimator_01.sh : ligne 11 : 1374461 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.03936460019502516
+c2= 0.13336411722069638
+cP= 2.82467950856205
+aug-pc-3 eigenvalue 2.7157307576575995 2.7157392717231987 error 8.514065599207754e-06
+estim_Delta= 0.3888762485155899
+estim_atom= 0.03024976913568098
+Estimator of Theorem 3.7= 16.68123269496151
+True error (H norm) 0.0030720180824937134
 aug-pc-4
-./example/estimator_01.sh : ligne 11 : 1374683 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039365261817100795
+c2= 0.13336635874337446
+cP= 2.82467950856205
+aug-pc-4 eigenvalue 2.7157307576575995 2.71573362289464 error 2.865237040516888e-06
+estim_Delta= 0.3888771069905912
+estim_atom= 0.03034227434304068
+Estimator of Theorem 3.7= 16.687468308752468
+True error (H norm) 0.002810162829453912
 unc-pc-4
-./example/estimator_01.sh : ligne 11 : 1374905 Processus arrêté      python3 main.py $BASIS $OUT_DIR
-[main 9fd3f84] ljll server results for estimator_01 (fine grid)
- 2 files changed, 38 insertions(+), 136 deletions(-)
- create mode 100644 out/estimator_01/res.pickle
-To https://github.com/ilygatsika/aposteriori.git
-   3418857..9fd3f84  main -> main
+coords shape (67500, 3)
+cH= 0.3682250153776402
+c1= 0.039365193112117294
+c2= 0.13336612597638514
+cP= 2.82467950856205
+unc-pc-4 eigenvalue 2.7157307576575995 2.715734209485121 error 3.4518275215944527e-06
+estim_Delta= 0.38897257752805153
+estim_atom= 0.03034704908027183
+Estimator of Theorem 3.7= 16.691168242185128
+True error (H norm) 0.003043635819196632
