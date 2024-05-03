@@ -57,7 +57,7 @@ def green_inner_fast(f, kernel, coords, dV):
     integral = inner(f_y_1, f(coords), dV)
 
     end = time.time()
-    print("Total time green_inner_fast=%.3 seconds" %(end - start))
+    print("Total time green_inner_fast=%.3f seconds" %(end - start))
 
     return integral 
 
