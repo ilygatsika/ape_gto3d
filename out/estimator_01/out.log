@@ -1,42 +1,38 @@
 cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1932166 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1952846 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 unc-cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1938522 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1959999 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 unc-cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1938587 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1960660 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 pc-1
-./example/estimator_01.sh : ligne 11 : 1938715 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1960662 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 unc-pc-1
-./example/estimator_01.sh : ligne 11 : 1938783 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1960727 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 pc-2
-./example/estimator_01.sh : ligne 11 : 1938848 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1960792 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 unc-pc-2
-./example/estimator_01.sh : ligne 11 : 1938913 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1960860 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1938978 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1960925 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 aug-cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1939045 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1960990 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 aug-cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1939111 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961055 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 aug-cc-pvqz
-./example/estimator_01.sh : ligne 11 : 1939239 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961123 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 cc-pvqz
-./example/estimator_01.sh : ligne 11 : 1939304 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961188 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 cc-pv5z
-./example/estimator_01.sh : ligne 11 : 1939371 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961316 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 aug-cc-pv5z
-./example/estimator_01.sh : ligne 11 : 1939437 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961381 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 pc-3
-./example/estimator_01.sh : ligne 11 : 1939565 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961448 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 pc-4
-./example/estimator_01.sh : ligne 11 : 1939630 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961577 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 aug-pc-3
-./example/estimator_01.sh : ligne 11 : 1939695 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961642 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 aug-pc-4
-./example/estimator_01.sh : ligne 11 : 1939790 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1961773 Processus arrêté      python3 main.py $BASIS $OUT_DIR
 unc-pc-4
-./example/estimator_01.sh : ligne 11 : 1939889 Processus arrêté      python3 main.py $BASIS $OUT_DIR
-[main 39790dd] ljll server results for estimator_01 (fine grid)
- 1 file changed, 19 insertions(+), 190 deletions(-)
-To https://github.com/ilygatsika/aposteriori.git
-   aad603b..39790dd  main -> main
+./example/estimator_01.sh : ligne 11 : 1961838 Processus arrêté      python3 main.py $BASIS $OUT_DIR
