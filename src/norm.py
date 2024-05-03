@@ -2,6 +2,7 @@ import numpy as np
 from pyscf.solvent import ddcosmo
 from pyscf.symm import sph
 import src.gto
+import time
 
 """
 Routines for evaluating norms and inner products
@@ -45,6 +46,8 @@ def green_inner_fast(f, kernel, coords, dV):
 
     ncoords = coords.shape[0]
     
+    start = time.time()
+
     # Evaluate 3D integral on y
     coords_transl = np.array([coords + coords[i] for i in range(ncoords)]).reshape(ncoords**2,3)
     f_vals = f(coords_transl)
@@ -52,6 +55,9 @@ def green_inner_fast(f, kernel, coords, dV):
     
     # Evaluate 3D integral on z
     integral = inner(f_y_1, f(coords), dV)
+
+    end = time.time()
+    print("Total time green_inner_fast=%.3 seconds" %(end - start))
 
     return integral 
 
