@@ -34,6 +34,27 @@ def green_inner(f, kernel, coords, dV):
 
     return integral 
 
+def green_inner_fast(f, kernel, coords, dV):
+    """
+    Return scalar equal to <f, G(x,y) f>_{L_2}
+    using Green kernel discretized on coords
+
+    Attention this implementation is faster but consumes much more memory
+    than the previous one. Use with caution
+    """
+
+    ncoords = coords.shape[0]
+    
+    # Evaluate 3D integral on y
+    coords_transl = np.array([coords + coords[i] for i in range(ncoords)]).reshape(ncoords**2,3)
+    f_vals = f(coords_transl)
+    f_y_1 = np.array([inner(f_vals[i*ncoords:(i+1)*ncoords], kernel(coords), dV) for i in range(ncoords)])
+    
+    # Evaluate 3D integral on z
+    integral = inner(f_y_1, f(coords), dV)
+
+    return integral 
+
 def atom_inner(f, g, eigpairs, rad_grid, lebedev_order, lmax, shift):
     """
     Spectral decomposition of order lmax for given eigenpairs

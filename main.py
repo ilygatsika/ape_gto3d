@@ -87,13 +87,13 @@ takes some time
 
 # Green's function of the screened Laplacian operator
 alpha = np.sqrt(shift_inf)
-kernel = lambda x: 1./(4*np.pi) * \
-        np.exp(-alpha * (x[0]**2 + x[1]**2 + x[2]**2))/np.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
+kernel = lambda x: 1./(4*np.pi) * np.exp(-alpha * norm2(x, axis=1)**2)/norm2(x, axis=1)
 # integrand
-p_res = lambda xv: np.sqrt(pou.partition_compl(Rh, xv, amin, amax)) * \
+delta = pou.delta_value(amin, amax)
+p_res = lambda xv: np.sqrt(pou.partition_compl(Rh, xv, amin, amax, delta)) * \
         gto.residual(mol, xv, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift)
 
-estim_Delta = norm.green_inner(p_res, kernel, coords, dV)
+estim_Delta = norm.green_inner_fast(p_res, kernel, coords, dV)
 
 print('estim_Delta=',estim_Delta)
 
@@ -161,6 +161,7 @@ data["lebedev_order"] = lebedev_order
 data["density_file"] = density_file
 data["helfem_res_file"] = helfem_res_file
 data["atom_file"] = atom_file
+data["n_bas"] = mol.nbas
 key = basis
 utils.store_to_file(resfile, key, data)
 
