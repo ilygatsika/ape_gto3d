@@ -5,9 +5,9 @@ c1= 0.038837217275963794
 c2= 0.13157738606911767
 cP= 2.82467950856205
 cc-pvdz eigenvalue 2.7157307576575995 2.7202571888186657 error 0.004526431161066213
-Total time green_inner_fast=95.703 seconds
+Total time green_inner_fast=92.796 seconds
 estim_Delta= 0.001393971393281149
-estim_atom= 0.0001337151169974631
+estim_atom= 0.00013371511699746309
 Estimator of Theorem 3.7= 0.35254862828655675
 True error (H norm) 0.3424988627904875
 unc-cc-pvdz
@@ -17,9 +17,9 @@ c1= 0.03905350387790043
 c2= 0.1323101477786495
 cP= 2.82467950856205
 unc-cc-pvdz eigenvalue 2.7157307576575995 2.7184006444804885 error 0.002669886822888934
-Total time green_inner_fast=91.267 seconds
+Total time green_inner_fast=92.907 seconds
 estim_Delta= 0.0007399016265560043
-estim_atom= 0.00010841759482403638
+estim_atom= 0.00010841759482403636
 Estimator of Theorem 3.7= 0.26520233305541896
 True error (H norm) 0.38082300653027923
 unc-cc-pvtz
@@ -29,9 +29,9 @@ c1= 0.039305999788612274
 c2= 0.13316558373042062
 cP= 2.82467950856205
 unc-cc-pvtz eigenvalue 2.7157307576575995 2.7162397815155837 error 0.0005090238579841255
-Total time green_inner_fast=95.088 seconds
-estim_Delta= 0.00011703532832980809
-estim_atom= 2.8170774674497578e-05
+Total time green_inner_fast=95.601 seconds
+estim_Delta= 0.00011703532832980808
+estim_atom= 2.817077467449758e-05
 Estimator of Theorem 3.7= 0.11178665344715268
 True error (H norm) 0.3712498568653727
 pc-1
@@ -41,7 +41,7 @@ c1= 0.0389418103421127
 c2= 0.1319317390122505
 cP= 2.82467950856205
 pc-1 eigenvalue 2.7157307576575995 2.719358747141554 error 0.0036279894839545967
-Total time green_inner_fast=94.709 seconds
+Total time green_inner_fast=92.487 seconds
 estim_Delta= 0.0010974540346004543
 estim_atom= 6.424863747586711e-05
 Estimator of Theorem 3.7= 0.3013245521723846
@@ -53,101 +53,176 @@ c1= 0.039078226438658416
 c2= 0.1323939058372755
 cP= 2.82467950856205
 unc-pc-1 eigenvalue 2.7157307576575995 2.7181887606142094 error 0.002458002956609917
-Total time green_inner_fast=93.839 seconds
+Total time green_inner_fast=93.605 seconds
 estim_Delta= 0.0005906462947681297
-estim_atom= 4.727427750385525e-05
+estim_atom= 4.7274277503855244e-05
 Estimator of Theorem 3.7= 0.22384842312659023
 True error (H norm) 0.3665035322704077
 pc-2
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03931928054282118
+c2= 0.13321057786353313
+cP= 2.82467950856205
+pc-2 eigenvalue 2.7157307576575995 2.716126317071648 error 0.000395559414048563
+Total time green_inner_fast=104.143 seconds
+estim_Delta= 0.00010554030597351342
+estim_atom= 2.1795052164990918e-05
+Estimator of Theorem 3.7= 0.10363695669883081
+True error (H norm) 0.37710099426425153
 unc-pc-2
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.039336354705145064
+c2= 0.13326842375995596
+cP= 2.82467950856205
+unc-pc-2 eigenvalue 2.7157307576575995 2.715980471704235 error 0.0002497140466353187
+Total time green_inner_fast=122.830 seconds
+estim_Delta= 7.184835345305976e-05
+estim_atom= 2.0841230834106484e-05
+Estimator of Theorem 3.7= 0.0903780284893378
+True error (H norm) 0.3815737659166225
 cc-pvtz
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03929452836361641
+c2= 0.1331267194599782
+cP= 2.82467950856205
+cc-pvtz eigenvalue 2.7157307576575995 2.7163378033420917 error 0.0006070456844922134
+Total time green_inner_fast=98.739 seconds
+estim_Delta= 0.0001491421756044583
+estim_atom= 3.0294423623245476e-05
+Estimator of Theorem 3.7= 0.12300509572365052
+True error (H norm) 0.36430277606292344
 aug-cc-pvdz
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03883797125588219
+c2= 0.13157994049278057
+cP= 2.82467950856205
+aug-cc-pvdz eigenvalue 2.7157307576575995 2.7202507078969913 error 0.004519950239391779
+Total time green_inner_fast=94.981 seconds
+estim_Delta= 0.0013998802332068354
+estim_atom= 0.00013371409174299103
+Estimator of Theorem 3.7= 0.3531887073648803
+True error (H norm) 0.3437547962913955
 aug-cc-pvtz
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03930372184117583
+c2= 0.13315786622668804
+cP= 2.82467950856205
+aug-cc-pvtz eigenvalue 2.7157307576575995 2.7162592451402543 error 0.0005284874826547714
+Total time green_inner_fast=100.524 seconds
+estim_Delta= 0.00011629921798329962
+estim_atom= 3.1848193148329827e-05
+Estimator of Theorem 3.7= 0.11391011847110964
+True error (H norm) 0.3707999256201274
 aug-cc-pvqz
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03934944640095979
+c2= 0.1333127773783492
+cP= 2.82467950856205
+aug-cc-pvqz eigenvalue 2.7157307576575995 2.715868665507659 error 0.00013790785005962647
+Total time green_inner_fast=137.770 seconds
+estim_Delta= 1.773680247938422e-05
+estim_atom= 1.9299081698626166e-05
+Estimator of Theorem 3.7= 0.06362268086732399
+True error (H norm) 0.3789282864582782
 cc-pvqz
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03934764877429705
+c2= 0.1333066871629836
+cP= 2.82467950856205
+cc-pvqz eigenvalue 2.7157307576575995 2.715884016565277 error 0.0001532589076775892
+Total time green_inner_fast=104.323 seconds
+estim_Delta= 2.6986264391490155e-05
+estim_atom= 1.9179143053115195e-05
+Estimator of Theorem 3.7= 0.06852842651584141
+True error (H norm) 0.37901565716495283
 cc-pv5z
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.039363567493116626
+c2= 0.1333606185092221
+cP= 2.82467950856205
+cc-pv5z eigenvalue 2.7157307576575995 2.7157480888697547 error 1.7331212155191622e-05
+Total time green_inner_fast=113.610 seconds
+estim_Delta= 2.867054967860688e-06
+estim_atom= 1.621622921988615e-05
+Estimator of Theorem 3.7= 0.05034447619728787
+True error (H norm) 0.3791176704990832
 aug-cc-pv5z
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03936372877776207
+c2= 0.13336116492870187
+cP= 2.82467950856205
+aug-cc-pv5z eigenvalue 2.7157307576575995 2.715746711823567 error 1.59541659674467e-05
+Total time green_inner_fast=116.769 seconds
+estim_Delta= 2.4585004318563306e-06
+estim_atom= 1.6225103516043127e-05
+Estimator of Theorem 3.7= 0.05006474649737172
+True error (H norm) 0.3788680925112369
 pc-3
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.039364569216693006
+c2= 0.13336401226858458
+cP= 2.82467950856205
+pc-3 eigenvalue 2.7157307576575995 2.715739536212646 error 8.778555046440317e-06
+Total time green_inner_fast=101.761 seconds
+estim_Delta= 2.163843401335152e-06
+estim_atom= 1.5919075369867328e-05
+Estimator of Theorem 3.7= 0.04940937397966335
+True error (H norm) 0.37515090540862095
 pc-4
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.039365179245260666
+c2= 0.13336607899658393
+cP= 2.82467950856205
+pc-4 eigenvalue 2.7157307576575995 2.7157343278778483 error 3.5702202487719603e-06
+Total time green_inner_fast=112.151 seconds
+estim_Delta= 1.488642111690231e-06
+estim_atom= 1.3789791065539669e-05
+Estimator of Theorem 3.7= 0.045681973953279865
+True error (H norm) 0.3771708964727826
 aug-pc-3
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.03936460019502516
+c2= 0.13336411722069638
+cP= 2.82467950856205
+aug-pc-3 eigenvalue 2.7157307576575995 2.7157392717231987 error 8.514065599207754e-06
+Total time green_inner_fast=112.307 seconds
+estim_Delta= 2.025496688041137e-06
+estim_atom= 1.5922268442352434e-05
+Estimator of Theorem 3.7= 0.049313328110097476
+True error (H norm) 0.3750553983272088
 aug-pc-4
 coords shape (3600, 3)
-Traceback (most recent call last):
-  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
-    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
-    ^^^^^^^^^^^^^^^^^^
-ValueError: too many values to unpack (expected 2)
+cH= 0.3682250153776402
+c1= 0.039365261817100795
+c2= 0.13336635874337446
+cP= 2.82467950856205
+aug-pc-4 eigenvalue 2.7157307576575995 2.71573362289464 error 2.865237040516888e-06
+Total time green_inner_fast=143.184 seconds
+estim_Delta= 9.370765869269955e-07
+estim_atom= 1.3791637337664666e-05
+Estimator of Theorem 3.7= 0.04524916520945944
+True error (H norm) 0.37706440418016784
 unc-pc-4
-./example/estimator_01.sh : ligne 11 : 1972593 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+cH= 0.3682250153776402
+c1= 0.039365193112117294
+c2= 0.13336612597638514
+cP= 2.82467950856205
+unc-pc-4 eigenvalue 2.7157307576575995 2.715734209485121 error 3.4518275215944527e-06
+Total time green_inner_fast=121.967 seconds
+estim_Delta= 1.3681930406107828e-06
+estim_atom= 1.3775774426882982e-05
+Estimator of Theorem 3.7= 0.045565085922551124
+True error (H norm) 0.37715407041984794
