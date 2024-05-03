@@ -103,9 +103,10 @@ def residual(mol, coord, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift):
     ao_value = dft.numint.eval_ao(mol, coord)
     u_gto = ao_value @ C
 
+    # Bug fix
     # Convention to take positive
-    if ( flag ):
-        u_gto = - u_gto 
+    #if ( flag ):
+    #    u_gto = - u_gto 
 
     # Coulomb term
     V = Coulomb(Rh, Z1, Z2)
