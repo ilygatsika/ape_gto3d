@@ -1,38 +1,153 @@
 cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1952846 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+cH= 0.3682250153776402
+c1= 0.038837217275963794
+c2= 0.13157738606911767
+cP= 2.82467950856205
+cc-pvdz eigenvalue 2.7157307576575995 2.7202571888186657 error 0.004526431161066213
+Total time green_inner_fast=95.703 seconds
+estim_Delta= 0.001393971393281149
+estim_atom= 0.0001337151169974631
+Estimator of Theorem 3.7= 0.35254862828655675
+True error (H norm) 0.3424988627904875
 unc-cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1959999 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+cH= 0.3682250153776402
+c1= 0.03905350387790043
+c2= 0.1323101477786495
+cP= 2.82467950856205
+unc-cc-pvdz eigenvalue 2.7157307576575995 2.7184006444804885 error 0.002669886822888934
+Total time green_inner_fast=91.267 seconds
+estim_Delta= 0.0007399016265560043
+estim_atom= 0.00010841759482403638
+Estimator of Theorem 3.7= 0.26520233305541896
+True error (H norm) 0.38082300653027923
 unc-cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1960660 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+cH= 0.3682250153776402
+c1= 0.039305999788612274
+c2= 0.13316558373042062
+cP= 2.82467950856205
+unc-cc-pvtz eigenvalue 2.7157307576575995 2.7162397815155837 error 0.0005090238579841255
+Total time green_inner_fast=95.088 seconds
+estim_Delta= 0.00011703532832980809
+estim_atom= 2.8170774674497578e-05
+Estimator of Theorem 3.7= 0.11178665344715268
+True error (H norm) 0.3712498568653727
 pc-1
-./example/estimator_01.sh : ligne 11 : 1960662 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+cH= 0.3682250153776402
+c1= 0.0389418103421127
+c2= 0.1319317390122505
+cP= 2.82467950856205
+pc-1 eigenvalue 2.7157307576575995 2.719358747141554 error 0.0036279894839545967
+Total time green_inner_fast=94.709 seconds
+estim_Delta= 0.0010974540346004543
+estim_atom= 6.424863747586711e-05
+Estimator of Theorem 3.7= 0.3013245521723846
+True error (H norm) 0.32884290389989423
 unc-pc-1
-./example/estimator_01.sh : ligne 11 : 1960727 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+cH= 0.3682250153776402
+c1= 0.039078226438658416
+c2= 0.1323939058372755
+cP= 2.82467950856205
+unc-pc-1 eigenvalue 2.7157307576575995 2.7181887606142094 error 0.002458002956609917
+Total time green_inner_fast=93.839 seconds
+estim_Delta= 0.0005906462947681297
+estim_atom= 4.727427750385525e-05
+Estimator of Theorem 3.7= 0.22384842312659023
+True error (H norm) 0.3665035322704077
 pc-2
-./example/estimator_01.sh : ligne 11 : 1960792 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 unc-pc-2
-./example/estimator_01.sh : ligne 11 : 1960860 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1960925 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 aug-cc-pvdz
-./example/estimator_01.sh : ligne 11 : 1960990 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 aug-cc-pvtz
-./example/estimator_01.sh : ligne 11 : 1961055 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 aug-cc-pvqz
-./example/estimator_01.sh : ligne 11 : 1961123 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 cc-pvqz
-./example/estimator_01.sh : ligne 11 : 1961188 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 cc-pv5z
-./example/estimator_01.sh : ligne 11 : 1961316 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 aug-cc-pv5z
-./example/estimator_01.sh : ligne 11 : 1961381 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 pc-3
-./example/estimator_01.sh : ligne 11 : 1961448 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 pc-4
-./example/estimator_01.sh : ligne 11 : 1961577 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 aug-pc-3
-./example/estimator_01.sh : ligne 11 : 1961642 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 aug-pc-4
-./example/estimator_01.sh : ligne 11 : 1961773 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+coords shape (3600, 3)
+Traceback (most recent call last):
+  File "/users/home/lygatsika/code/env/aposteriori/main.py", line 55, in <module>
+    u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
+    ^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
 unc-pc-4
-./example/estimator_01.sh : ligne 11 : 1961838 Processus arrêté      python3 main.py $BASIS $OUT_DIR
+./example/estimator_01.sh : ligne 11 : 1972593 Processus arrêté      python3 main.py $BASIS $OUT_DIR
