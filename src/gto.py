@@ -55,9 +55,10 @@ def build_Delta(mol, coords, C):
     # 2nd derivatives (6,N,nao) for xx, xy, xz, yy, yz, zz
     lapl_ao = dft.numint.eval_ao(mol, coords, deriv=2)
 
+    u_gto = lapl_ao[0] @ C
     u_Delta_gto = (lapl_ao[4] + lapl_ao[7] + lapl_ao[9]) @ C
 
-    return u_Delta_gto
+    return (u_gto, u_Delta_gto)
 
 def radial_atomic(n,l,r):
     """
@@ -98,10 +99,10 @@ def residual(mol, coord, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift):
     """
 
     # Kinetic term
-    u_Delta_gto = build_Delta(mol, coord, C)
+    u_gto, u_Delta_gto = build_Delta(mol, coord, C)
 
-    ao_value = dft.numint.eval_ao(mol, coord)
-    u_gto = ao_value @ C
+    #ao_value = dft.numint.eval_ao(mol, coord)
+    #u_gto = ao_value @ C
 
     # Bug fix
     # Convention to take positive
