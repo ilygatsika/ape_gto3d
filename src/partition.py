@@ -31,15 +31,13 @@ def delta_value(a, b):
 
     return d
 
-def partition(x, a, b):
+def partition(x, a, b, delta):
     """
     Partition of unity function p(x) for x>0
     with support on (0,b), decreasing on (a,b) and constant (=1) on (0,a)
     """
 
     # Numerical interval for avoiding division by zero
-    delta = delta_value(a, b)
-
     if (x < a + delta):
         return 1
     elif (x > b - delta):
@@ -47,12 +45,11 @@ def partition(x, a, b):
     else:
         return 1/(1+exp(-1/(x-a))/exp(-1/(b-x)))
 
-def partition_vec(x, a, b):
+def partition_vec(x, a, b, delta):
     """
     Evaluate partition function on a vector x of radial parts
     """
 
-    delta = delta_value(a,b)
     #print(f'{delta=}')
     idx_1 = np.where(x < a + delta)[0]
     idx_0 = np.where(x > b - delta)[0]
@@ -62,11 +59,11 @@ def partition_vec(x, a, b):
     mask[idx_0] = False
     y = np.ones(n, dtype=float)
     y[idx_0] = 0
-    y[mask] = [partition(xpt, a, b) for xpt in x[mask]]
+    y[mask] = [partition(xpt, a, b, delta) for xpt in x[mask]]
 
     return y
 
-def partition_compl(Rh, coords, amin, amax, plot=False):
+def partition_compl(Rh, coords, amin, amax, delta, plot=False):
     """
     Partition of unity of the complement domain of two atoms
     evaluated on 3D grid
@@ -77,8 +74,8 @@ def partition_compl(Rh, coords, amin, amax, plot=False):
     nuc = np.array([0,0,-Rh])
     rad_1 = np.linalg.norm(coords - nuc, axis=1)
     rad_2 = np.linalg.norm(coords + nuc, axis=1)
-    p1 = partition_vec(rad_1, amin, amax)
-    p2 = partition_vec(rad_2, amin, amax)
+    p1 = partition_vec(rad_1, amin, amax, delta)
+    p2 = partition_vec(rad_2, amin, amax, delta)
     p3 = 1 - p1 - p2
     
     if (plot):
@@ -120,7 +117,7 @@ def build_deriv_partition():
 
     return (Delta_f_fun, nabla_f_fun)
 
-def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, plot=False):
+def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, delta, plot=False):
     """
     Evaluate supremum in constant (3.1) of paper
     over coords 3D Cartesian coordinates that is box around nuclei
@@ -149,7 +146,6 @@ def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, plot=False):
     coords[:,2] = X
     rad_1 = np.linalg.norm(coords - nuc, axis=1)
     rad_2 = np.linalg.norm(coords + nuc, axis=1)
-    delta = delta_value(amin,amax)
     in_slice_1 = (amin + delta < rad_1) & (rad_1 < amax - delta)
     in_slice_2 = (amin + delta < rad_2) & (rad_2 < amax - delta)
      
@@ -171,7 +167,7 @@ def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, plot=False):
             # Term on 1
             D1 = Delta(r1, amin, amax)
             g1 = nabla(r1, amin, amax)
-            p1 = partition(r1, amin, amax)
+            p1 = partition(r1, amin, amax, delta)
             val1 = - 0.5 * D1 + g1**2/(4*p1) + V1(r1) + (sigma1 - sigma)*p1
             
             # Complement term only depends on 1
@@ -186,7 +182,7 @@ def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, plot=False):
             # Term on 2
             D2 = Delta(r2, amin, amax)
             g2 = nabla(r2, amin, amax)
-            p2 = partition(r2, amin, amax)
+            p2 = partition(r2, amin, amax, delta)
             val2 = - 0.5 * D2 + g2**2/(4*p2) + V2(r2) + (sigma2 - sigma)*p2
             
             # Complement term only depends on 2
@@ -201,13 +197,13 @@ def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, plot=False):
             # Term on 1 
             D1 = Delta(r1, amin, amax)
             g1 = nabla(r1, amin, amax)
-            p1 = partition(r1, amin, amax)
+            p1 = partition(r1, amin, amax, delta)
             val1 = - 0.5 * D1 + g1**2/(4*p1) + V1(r1) + (sigma1 - sigma)*p1
 
             # Term on 2
             D2 = Delta(r2, amin, amax)
             g2 = nabla(r2, amin, amax)
-            p2 = partition(r2, amin, amax)
+            p2 = partition(r2, amin, amax, delta)
             val2 = - 0.5 * D2 + g2**2/(4*p2) + V2(r2) + (sigma2 - sigma)*p2 
 
             # Complement term only depends on 2

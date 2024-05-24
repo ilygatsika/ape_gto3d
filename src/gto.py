@@ -92,7 +92,7 @@ def Coulomb(Rh, Z1, Z2):
 
     return V
 
-def residual(mol, coord, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift):
+def residual(mol, coord, C, E_gto, Rh, Z1, Z2, shift):
     """
     Compute residual of Gaussian discretisation
     flag takes care of sign convention
@@ -100,14 +100,6 @@ def residual(mol, coord, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift):
 
     # Kinetic term
     u_gto, u_Delta_gto = build_Delta(mol, coord, C)
-
-    #ao_value = dft.numint.eval_ao(mol, coord)
-    #u_gto = ao_value @ C
-
-    # Bug fix
-    # Convention to take positive
-    #if ( flag ):
-    #    u_gto = - u_gto 
 
     # Coulomb term
     V = Coulomb(Rh, Z1, Z2)
