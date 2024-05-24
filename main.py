@@ -3,10 +3,8 @@ import src.utils as utils
 import src.gto as gto
 import src.partition as pou
 import src.norm as norm
-from pyscf import dft
 from numpy.linalg import norm as norm2
 import numpy as np
-import pymp
 import sys
 
 """
@@ -51,15 +49,15 @@ Efem = Efem - Efem_nucr + shift
 E2 += shift
 
 # Approximate GTO solution from PySCF
-mol, E_gto, C = gto.build_gto_sol(Rh, basis) 
-ao_value = dft.numint.eval_ao(mol, coords)
-u_gto = ao_value @ C
+mol, E_gto, C = gto.build_gto_sol(Rh, basis)
+u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
 # Shift
 E_gto += shift
-# H(-X) = E(-X) par convention on prend la positive
-flag = inner_projection(u_fem, u_gto)
-if ( flag < 0 ):
+# H(-X) = E(-X) by convention take positive
+if ( inner_projection(u_fem, u_gto) < 0 ):
+    C = - C
     u_gto = - u_gto
+    u_Delta_gto = - u_Delta_gto
 
 # Constant of Assumption 3
 cH = 1./Efem
@@ -73,13 +71,13 @@ print('c2=',c2)
 
 
 # Constant associated to partition (equation 1.3)
-val_sup = pou.eval_supremum(amin, amax, Rh, Z1, Z2, sigmas)
+delta = pou.delta_value(amin, amax)
+val_sup = pou.eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, delta)
 cP = 1 + cH**2 * val_sup
 print('cP=', cP)
 
 # error should be 1.28e-01
 print(basis, "eigenvalue", Efem, E_gto, "error", abs(Efem - E_gto))
-
 
 """
 Laplacian estimator
@@ -90,11 +88,11 @@ takes some time
 alpha = np.sqrt(shift_inf)
 kernel = lambda x: 1./(4*np.pi) * np.exp(-alpha * norm2(x, axis=1)**2)/norm2(x, axis=1)
 # integrand
-delta = pou.delta_value(amin, amax)
 p_res = lambda xv: np.sqrt(pou.partition_compl(Rh, xv, amin, amax, delta)) * \
-        gto.residual(mol, xv, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift)
+        gto.residual(mol, xv, C, E_gto, Rh, Z1, Z2, shift)
 
-estim_Delta = norm.green_inner_fast(p_res, kernel, coords, dV)
+# Use green_inner_fast for small grids
+estim_Delta = norm.green_inner(p_res, kernel, coords, dV)
 
 print('estim_Delta=',estim_Delta)
 
@@ -106,9 +104,8 @@ Atomic estimator
 E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(atom_file, lmax)
 
 # Partition of unity evaluated on radial part
-g = np.sqrt(pou.partition_vec(r_rad, amin, amax))
-# residual
-f = lambda xv: gto.residual(mol, xv, C, u_fem, E_gto, flag, Rh, Z1, Z2, shift)
+g = np.sqrt(pou.partition_vec(r_rad, amin, amax, delta))
+f = lambda xv: gto.residual(mol, xv, C, E_gto, Rh, Z1, Z2, shift)
 
 eigpairs = (E_atom, orbs_rad)
 rad_grid = (r_rad, w_rad)
@@ -126,7 +123,6 @@ print("Estimator of Theorem 3.7=", final_estim)
 
 # True Hnorm error
 # Laplacian term
-u_Delta_gto = gto.build_Delta(mol, coords, C)
 val_Delta = - 0.5 * inner_projection(u_fem, u_Delta_gto)
 # Potential V (Coulomb)
 dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
@@ -134,7 +130,7 @@ val_pot = - np.power(Rh,2) * inner_projection(u_fem, u_gto, dV=dV_pot)
 val_ovlp = inner_projection(u_gto, u_fem)
 
 # Hnorm 
-err_H = np.sqrt(Efem + E_gto - 2*( - val_Delta + val_pot + shift * val_ovlp))
+err_H = np.sqrt(Efem + E_gto - 2*( val_Delta + val_pot + shift * val_ovlp))
 
 print("True error (H norm)", err_H)
 

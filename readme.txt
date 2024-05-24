@@ -6,6 +6,10 @@ Description
 
     Acknowledgement: thanks to Susi Lethola for insightful discussions
 
+Requirements
+
+        >>> python -m pip install -r requirements.txt
+
 Usage
 
     Main H-norm calculation and estimation:
