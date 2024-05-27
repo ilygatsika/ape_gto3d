@@ -27,7 +27,7 @@ lmax = 6 # lmax <= 15 due to PySCF
 lebedev_order = 13
 
 # Input files
-density_file = 'dat/density.hdf5'
+density_file = 'dat/density_small.hdf5'
 helfem_res_file = 'dat/helfem.chk'
 atom_file = 'dat/1e_lmax20_Rmax1_4.chk'
 
@@ -133,6 +133,8 @@ val_ovlp = inner_projection(u_gto, u_fem)
 err_H = np.sqrt(Efem + E_gto - 2*( val_Delta + val_pot + shift * val_ovlp))
 
 print("True error (H norm)", err_H)
+
+exit()
 
 # Store results to file
 data = {}
