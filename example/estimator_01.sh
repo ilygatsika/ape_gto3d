@@ -12,9 +12,10 @@ for BASIS in $BASES;
 do 
     echo $BASIS
     python3 main.py $BASIS $OUT_DIR
+
+    #git add out/estimator_01
+    #git commit -m "ljll server results on $BASIS (fine grid)"
+    #git push
 done
 
-git add out/estimator_01
-git commit -m "ljll server results for estimator_01 (fine grid)"
-git push
 

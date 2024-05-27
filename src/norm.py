@@ -21,15 +21,14 @@ def green_inner(f, kernel, coords, dV):
     using Green kernel discretized on coords
     """
 
-    # Evaluate 3D integral on y
     ncoords = coords.shape[0]
-    f_y_1 = np.empty(ncoords, dtype=float)
-    f_z_2 = np.array([kernel(z) for z in coords])
-    for i in range(ncoords):
 
-        # Evaluate 3D integral on z
-        f_y_1[i] = inner(f(coords + coords[i]), f_z_2, dV)
+    # Evaluate 3D integral on z
+    f_z_2 = kernel(coords)
+    f_y_1 = np.array([inner(f(coords + coords[i]), f_z_2, dV) for i in
+            range(ncoords)])
 
+    # Evaluate 3D integral on y
     f_y_2 = f(coords)
     integral = inner(f_y_1, f_y_2, dV)
 
