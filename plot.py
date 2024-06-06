@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pickle
 import numpy as np
 
-with open("res.pickle", 'rb') as file:
+with open("out/estimator_01/res.pickle", 'rb') as file:
 	data = pickle.load(file)
 
 basis = list(data.keys())
@@ -33,7 +33,7 @@ plt.plot(err_H[idx], '^-', label=r"$u_1 - u_{1N}$ in H")
 plt.yscale("log")
 plt.legend()
 plt.tight_layout()
-plt.savefig("norm.pdf")
+plt.savefig("img/norm.png")
 plt.close()
 
 exit()
