@@ -13,18 +13,21 @@ a0,_,_ = constants.physical_constants['Bohr radius']
 Call PySCF routines for GTO basis sets
 """
 
-def build_gto_sol(Rh, basis):
+z_dic = {'H': 1, 'He': 2, 'Li': 3}
+
+def build_gto_sol(Rh, elem1, elem2, basis1, basis2):
     """
     Solve ground-state pb on GTOs
+    allows diatomics of different atoms
     """
 
     # Create one-electron molecule
     mol = gto.M(
-            atom=f'H 0 0 {-Rh}; H 0 0 {Rh}', 
+            atom=f'{elem1} 0 0 {-Rh}; {elem2} 0 0 {Rh}', 
             unit='bohr', 
-            charge=1, 
+            charge=z_dic[elem1] + z_dic[elem2] - 1, 
             spin=1,
-            basis=basis, 
+            basis={elem1: basis1, elem2: basis2}, 
             verbose=0)
 
     # Run unrestricted Hartree-Fock

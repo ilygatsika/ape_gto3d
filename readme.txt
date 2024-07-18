@@ -29,3 +29,8 @@ Interface with
     PySCF (https://github.com/pyscf/pyscf)
     HelFEM (https://github.com/susilehtola/HelFEM)
 
+TODO
+    * run LiH^{3+} in HelFEM for the distance that can be interesting for
+      adaptive. Do the study for many basis sets and many distances in order to
+      find an interesting distance
+

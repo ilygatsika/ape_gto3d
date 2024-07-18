@@ -16,7 +16,14 @@ Test suite
 
 # Constants
 lebedev_order = 13
-lmax = 6
+lmax = 6 # 6 for H2+ and 10 for LiH^{3+}
+         # note there is a small error in spherical harmonics due to this
+         # on the 7 decimal the failing assertion is 
+         # np.testing.assert_almost_equal(np.square(ylm) @ w_1sph, 1.000)
+         # Arrays are not almost equal to 7 decimals
+         # ACTUAL: 1.0003004807692315
+         # DESIRED: 1.0
+         #
 basis = "aug-cc-pvtz"
 
 def tfunc(r):

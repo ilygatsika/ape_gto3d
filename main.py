@@ -49,7 +49,7 @@ Efem = Efem - Efem_nucr + shift
 E2 += shift
 
 # Approximate GTO solution from PySCF
-mol, E_gto, C = gto.build_gto_sol(Rh, basis)
+mol, E_gto, C = gto.build_gto_sol(Rh, 'H', 'H', basis, basis)
 u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
 # Shift
 E_gto += shift
@@ -117,7 +117,7 @@ r1 = 2*estim_atom + estim_Delta
 # Now multiply by constants according to Theorem 3
 # C is cP
 # C tilde is c1
-# C hat is c2.7
+# C hat is c2
 final_estim = pow(cP * 1./c1 * r1 + Efem * cP**2 * 1./c2**2 * r1**2, 0.5)
 print("Estimator of Theorem 3.7=", final_estim)
 
