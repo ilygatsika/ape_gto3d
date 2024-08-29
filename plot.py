@@ -23,17 +23,18 @@ err_H = np.array([data[basis[i]]["err_H"] for i in range(n_bas)])
 idx = np.argsort(err_H)[::-1]
 
 # Plot error convergence
-plt.title("s_1=%.1f s_2=%.1f s_inf=%.1f s=%.1f" %shift)
+plt.rcParams.update({'font.size': 13})
+#plt.title(r"$\sigma_1=%.1f \sigma_2=%.1f \sigma_3=%.1f s=%.1f" %shift)
 labels = [basis[idx[i]] for i in range(n_bas)]
-plt.xticks(np.arange(n_bas), labels, rotation=45, fontsize=8, ha='right', rotation_mode='anchor')
-plt.plot(estim[idx], 'x-', label=r"total estimator")
-plt.plot(estim_atom[idx], 'x-', label=r"atom term")
-plt.plot(estim_Delta[idx], 'x-', label=r"inf term")
-plt.plot(err_H[idx], '^-', label=r"$u_1 - u_{1N}$ in H")
+plt.xticks(np.arange(n_bas), labels, rotation=45, fontsize=12, ha='right', rotation_mode='anchor')
+plt.plot(estim[idx], 'x-', label=r"estimator")
+plt.plot(estim_atom[idx], 'x-', label=r"atom part")
+plt.plot(estim_Delta[idx], 'x-', label=r"inf part")
+plt.plot(err_H[idx], '^-', label="approx. error")
 plt.yscale("log")
 plt.legend()
-plt.tight_layout()
-plt.savefig("img/norm.png")
+plt.gcf().set_size_inches(7, 6)
+plt.savefig("img/norm.pdf", bbox_inches='tight')
 plt.close()
 
 exit()
@@ -70,6 +71,8 @@ Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = utils.diatomic_energy(helfem_res_file)
 
 coords = fem.prolate_to_cart(Rh, helfem_grid)
 dV_pot = fem.build_dV_pot(helfem_grid, Z1, Z2, wquad)
+
+print("nuclear distance=", Rh)
 
 # Reference energy with FEM
 # Efem = Efem_kin + Efem_nuc + Efem_nucr
@@ -139,9 +142,11 @@ bas_size = [bas_size[i] for i in idx]
 # Plot error convergence
 ntest = len(bases)
 labels = [str(bas_size[i]) + ' (' + bases[i] + ')' for i in range(ntest)]
+
+plt.rcParams.update({'font.size': 15})
 plt.xticks(np.arange(ntest), labels, rotation=45, fontsize=8, ha='right', rotation_mode='anchor')
 plt.plot(err_eigval, 'o-', label=r"$|\lambda_1 - \lambda_{1N}|$")
-plt.plot(err_eigvec_L2, 'x-', label=r"$u_1 - u_{1N}$ in L2")
+plt.plot(err_eigvec_L2, 'x-', label=r"$u_1 - u_{1N}$ in L_2")
 plt.plot(err_eigvec_H, '^-', label=r"$u_1 - u_{1N}$ in H")
 plt.plot([5.36236199475814,5.338068347689154], '-r*', label="estimator")
 plt.yscale("log")
