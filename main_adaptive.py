@@ -4,8 +4,10 @@ import src.gto as gto
 import src.partition as pou
 import src.norm as norm
 from numpy.linalg import norm as norm2
+import matplotlib.pyplot as plt
 import numpy as np
 import sys
+import time
 
 """
 Main code for H-norm error estimation using practical and guaranteed estimators
@@ -34,6 +36,7 @@ atom_H_file = 'dat/1e_H_in_LiH.chk'
 
 # Read data Diatomic
 dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
+print("nuclear distance=", 2*Rh)
 
 def inner_projection(u1, u2, dV=dV):
     return np.sum(u1 * u2 * dV)
@@ -81,8 +84,8 @@ while (True):
 
     # Get number of AOs per atom
     shell = mol.offset_ao_by_atom(ao_loc=None)
-    nbas_1 = shell[0,0] - shell[0,1]
-    nbas_2 = shell[1,0] - shell[1,1]
+    nbas_1 = shell[0,1] - shell[0,0]
+    nbas_2 = shell[1,1] - shell[1,0]
 
     # Save data for plot
     vec_Herr_adapt.append(err_H)
@@ -109,6 +112,7 @@ while (True):
     E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(atom_H_file, lmax)
 
     # Partition of unity evaluated on radial part
+    start_t = time.time()
     delta = pou.delta_value(amin, amax)
     g = np.sqrt(pou.partition_vec(r_rad, amin, amax, delta))
     f = lambda xv: gto.residual(mol, xv, C, E_gto, Rh, Z1, Z2, shift)
@@ -116,7 +120,9 @@ while (True):
     eigpairs = (E_atom, orbs_rad)
     rad_grid = (r_rad, w_rad)
     estim_atom_H = norm.atom_inner(f, g, eigpairs, rad_grid, lebedev_order, lmax, shift)
-    print('eta_H=', estim_atom_H, 'eta_Li=', estim_atom_Li)
+    end_t = time.time()
+
+    print('eta_H=', estim_atom_H, 'eta_Li=', estim_atom_Li, 'time=', end_t - start_t)
 
     # Add more basis functions to the atom with larger estimated error
     if (estim_atom_H > estim_atom_Li):
@@ -158,12 +164,27 @@ for i in range(max_iter):
 
     # Get number of AOs per atom
     shell = mol.offset_ao_by_atom(ao_loc=None)
-    nbas_1 = shell[0,0] - shell[0,1]
-    nbas_2 = shell[1,0] - shell[1,1]
+    nbas_1 = shell[0,1] - shell[0,0]
+    nbas_2 = shell[1,1] - shell[1,0]
 
     # Save results
     vec_Herr[i] = err_H
     vec_nbas1[i] = nbas_1
     vec_nbas2[i] = nbas_2
 
+# TODO add a small timer to compute cost of atomic error indicators
+
+Nb_list = vec_nbas1 + vec_nbas2
+Nb12_list = np.array(vec_nbas1_adapt) + np.array(vec_nbas2_adapt)
+
+plt.rcParams.update({'font.size': 15})
+plt.plot(Nb_list, vec_Herr, 'g^-', label=r"$N_1=N_2$")
+plt.plot(Nb12_list, vec_Herr_adapt, 'o-', color='orange', label="adaptive")
+plt.ylabel("approx. error")
+plt.xlabel(r"$N=N_1+N_2$ discretisation basis functions")
+plt.yscale("log")
+plt.legend()
+plt.tight_layout()
+plt.savefig("img/adapt_3d.pdf")
+plt.close()
 
