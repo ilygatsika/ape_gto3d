@@ -1,3 +1,6 @@
+TODO 
+- use commands to generate HelFEM data and diff that it is the same as precomputed ones
+
 Description
 
     Test of the a posteriori error estimators for Gaussian discretizations of
