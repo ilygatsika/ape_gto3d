@@ -34,7 +34,7 @@ Mi-Song Dupuy (Sorbonne Université), Geneviève Dusson (Université de Franche 
 
 ## Credits
 
-Contributor: Susi Lethola (University of Helsinki)
+Contributor: Susi Lehtola (University of Helsinki)
 
 Support of the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme (grant agreement EMC2 No 810367).
 
