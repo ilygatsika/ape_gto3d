@@ -24,9 +24,7 @@ python test.py
 ./run.sh
 ```
 
-This program runs all calculations at once, stores results in json format and then generates figures in the `img` directory. Note that the `out` directory of the present git repo already contains all precalculated results. Attention : running all the computations from scratch takes around 1 week on a supercomputer and allocates more than 20 gigs of memory. 
-
-Input data is finite element solutions used as a reference and obtained using HelFEM (https://github.com/susilehtola/HelFEM).
+This program runs all calculations at once, stores results in json format and then generates figures in the `img` directory. Note that the `out` directory of the present git repo already contains all precalculated results. _Attention_: running all the computations from scratch takes around 1 week on a supercomputer and allocates more than 20 gigs of memory. Input data is finite element solutions used as a reference and obtained using HelFEM (https://github.com/susilehtola/HelFEM).
 
 ## Authors
 
