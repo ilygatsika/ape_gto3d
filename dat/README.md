@@ -1,6 +1,6 @@
 # Data sets
 
-This directory gathers data sets computed with the HelFEM program. The data contains finite element solutions to molecular and atomic eigenproblems for the Coulomb potential.
+This directory gathers data sets computed with the HelFEM (https://github.com/susilehtola/HelFEM.git) program. The data contains finite element solutions to molecular and atomic eigenproblems for the Coulomb potential.
 
 Contents of checkpoint files can be printed in a terminal with
 ```
