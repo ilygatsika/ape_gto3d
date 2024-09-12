@@ -1,17 +1,23 @@
 #!/bin/bash
 
-#   >>> nohup ./example/estimator_01.sh > out/estimator_01/out.log &
+#   Run as a background task
+#
+#   >>> nohup ./run_long.sh > out/res.log &
 
-OUT_DIR=out/estimator_01/res.pickle 
+WORK_DIR=out
+OUT_DIR=$WORK_DIR/res.pickle 
 BASES="cc-pvdz unc-cc-pvdz unc-cc-pvtz pc-1 unc-pc-1 pc-2 unc-pc-2 \
     cc-pvtz aug-cc-pvdz aug-cc-pvtz aug-cc-pvqz cc-pvqz cc-pv5z \
     aug-cc-pv5z pc-3 pc-4 aug-pc-3 aug-pc-4 unc-pc-4"
-#BASES="cc-pvdz unc-cc-pvdz unc-cc-pvtz pc-1"
+
+if [[ ! -e $WORK_DIR ]]; then
+    mkdir $WORK_DIR
+fi
 
 for BASIS in $BASES;
 do 
     echo $BASIS
-    python3 main.py $BASIS $OUT_DIR
+    python3 examples/estimate.py $BASIS $OUT_DIR
 
     #git add out/estimator_01
     #git commit -m "ljll server results on $BASIS (fine grid)"

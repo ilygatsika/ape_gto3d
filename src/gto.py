@@ -28,7 +28,8 @@ def build_gto_sol(Rh, elem1, elem2, basis1, basis2):
             charge=z_dic[elem1] + z_dic[elem2] - 1, 
             spin=1,
             basis={elem1: basis1, elem2: basis2}, 
-            verbose=0)
+            verbose=0
+            )
 
     # Run unrestricted Hartree-Fock
     myhf = mol.UHF()

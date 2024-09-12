@@ -9,6 +9,7 @@ import src.fem as fem
 import src.partition as pou
 import src.norm as norm
 import matplotlib.pyplot as plt
+import os
 
 """
 Test suite
@@ -18,7 +19,7 @@ Test suite
 lebedev_order = 13
 lmax = 6 # 6 for H2+ and 10 for LiH^{3+}
          # note there is a small error in spherical harmonics due to this
-         # on the 7 decimal the failing assertion is 
+         # on the fourth decimal the failing assertion is 
          # np.testing.assert_almost_equal(np.square(ylm) @ w_1sph, 1.000)
          # Arrays are not almost equal to 7 decimals
          # ACTUAL: 1.0003004807692315
@@ -77,27 +78,23 @@ class Test(unittest.TestCase):
         coords = fem.prolate_to_cart(Rh, helfem_grid)
         
         # Build PySCF molecule
-        mol, E_gto, C = gto.build_gto_sol(Rh, basis)
+        mol, E_gto, C = gto.build_gto_sol(Rh, 'H', 'H', basis, basis)
         
         # Debug electron number
         S = mol.intor("int1e_ovlp")
         Smo = C.T @ S @ C
         np.testing.assert_almost_equal(Smo, 1.0)
         
-        # Returns array of shape (N,nao)
-        ao_value = dft.numint.eval_ao(mol, coords)
-        u_gto = ao_value @ C 
+        # GTO solution and its Laplacian on FEM quadrature
+        u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
 
         # GTO solution is normalized, otherwise FEM grid not good
         np.testing.assert_almost_equal(norm.inner(u_gto, u_gto, dV), 1.00)
         
-        # Kinetic term on FEM quadrature
-        u_Delta_gto = gto.build_Delta(mol, coords, C)
-        Ekin = - 0.5 * norm.inner(u_gto, u_Delta_gto, dV)
-
         # Compare to reference kinetic energy from PySCF
         T = mol.intor_symmetric('int1e_kin')
         Ekin_ref = C.T @ T @ C
+        Ekin = - 0.5 * norm.inner(u_gto, u_Delta_gto, dV) 
         np.testing.assert_almost_equal(Ekin_ref, Ekin)
 
         # H(-X) = E(-X) par convention on prend la positive
@@ -148,6 +145,9 @@ class Test(unittest.TestCase):
             A = orbs_rad[l] @ dV_rad @ orbs_rad[l].T
             n = A.shape[0]
             np.testing.assert_almost_equal(A, np.eye(n))
+
+        # Create img directory if non-existing
+        if (not os.path.exists("img")): os.mkdir("img") 
 
         # Plot the radial part of eigenvalues
         plt.plot(r_rad, r_rad**2*orbs_rad[0][0]**2, label='1s')

@@ -18,10 +18,10 @@ An estimated accuracy of 1e-10 is achieved with this quadrature grid on the mole
 ./diatomic_cbasis --Z1=H --Z2=H --Rbond=1.4
 ./diatomic_1e --Z1=H --Z2=H --Rbond=1.4 --angstrom=0 --grid=4 --zexp=1.0 --primbas=4 --nnodes=15 --nelem=5 --Rmax=40 --lmax=6 --save=helfem.chk
 ./diatomic_dgrid --load=helfem.chk --output=density.hdf5
-./1e_atom --Z=H --nelem=5 --lmax=20 --save=1e_lmax20_Rmax1_4.chk
+./1e_atom --Z=H --nelem=5 --lmax=20 --save=1e_lmax20.chk
 ```
 
-This generates `helfem.chk`, `density.hdf5` and `1e_lmax20_Rmax1_4.chk`.
+This generates `helfem.chk`, `density.hdf5` and `1e_lmax20.chk`.
 
 ### Coarse grid
 
