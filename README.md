@@ -36,7 +36,4 @@ Contributor: Susi Lehtola (University of Helsinki)
 
 Support of the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme (grant agreement EMC2 No 810367).
 
-TODO 
-- use commands to generate HelFEM data and diff that it is the same as precomputed ones
-
 
