@@ -231,7 +231,7 @@ def main():
     Nb_list = vec_nbas1 + vec_nbas2
     Nb12_list = vec_nbas1_adapt + vec_nbas2_adapt
 
-    plt.plot(Nb_list, vec_Herr, 'g^-', label=r"$N_1=N_2$")
+    plt.plot(Nb_list, vec_Herr, '^-', label=r"$N_1=N_2$")
     plt.plot(Nb12_list, vec_Herr_adapt, 'o-', label="adaptive")
     plt.ylabel("approx. error")
     plt.xlabel(r"$N=N_1+N_2$ discretisation basis functions")
