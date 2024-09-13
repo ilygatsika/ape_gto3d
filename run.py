@@ -27,8 +27,12 @@ basis="cc-pvdz unc-cc-pvdz unc-cc-pvtz pc-1 unc-pc-1 pc-2 unc-pc-2 \
 
 # Run simulations from Section 4.2.3.
 #gto_error.main()
-#estimate.main()
 plot.main()
+
+# TODO test and pass two arguments: basis and grid as
+# not correct for the moment
+# >> python3 run.py "basis" "grid"
+#estimate.main()
 
 # Run simulations from Section 4.2.4
 #sensitivity.main()
