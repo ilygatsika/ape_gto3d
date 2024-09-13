@@ -4,22 +4,17 @@
 #
 #   >>> nohup ./run_long.sh > out/res.log &
 
-WORK_DIR=out
-OUT_DIR=$WORK_DIR/res.pickle 
+GRID="coarse" # or "fine" (too long)
 BASES="cc-pvdz unc-cc-pvdz unc-cc-pvtz pc-1 unc-pc-1 pc-2 unc-pc-2 \
     cc-pvtz aug-cc-pvdz aug-cc-pvtz aug-cc-pvqz cc-pvqz cc-pv5z \
     aug-cc-pv5z pc-3 pc-4 aug-pc-3 aug-pc-4 unc-pc-4"
 
-if [[ ! -e $WORK_DIR ]]; then
-    mkdir $WORK_DIR
-fi
-
 for BASIS in $BASES;
 do 
     echo $BASIS
-    python3 examples/estimate.py $BASIS $OUT_DIR
+    python3 examples/estimate.py $BASIS $GRID
 
-    #git add out/estimator_01
+    #git add out/*
     #git commit -m "ljll server results on $BASIS (fine grid)"
     #git push
 done
