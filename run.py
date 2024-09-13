@@ -1,19 +1,15 @@
 #from examples import gto_error, estimate, sensitivity, adapt
 from examples import plot, adapt
 import matplotlib as mpl
+import scienceplots
 
-# Setting matplotlib params here
-mpl.rcParams['legend.fontsize'] = 'medium'
-mpl.rcParams['lines.linewidth'] = 1.5
-mpl.rcParams["pdf.use14corefonts"] = True
-mpl.rcParams['lines.markersize'] = 7.5
-mpl.rcParams['lines.markerfacecolor'] = 'none'
-mpl.rcParams["legend.edgecolor"] = 'k'
+# Setting matplotlib params
+# User can customize this globally
+# -----------------------
+
 mpl.rcParams["legend.labelspacing"] = 0.01
-mpl.rcParams["legend.fancybox"] = False
-mpl.rcParams['mathtext.fontset'] = 'cm'
-mpl.rcParams["axes.labelpad"] = 1.4
-mpl.rcParams['axes.linewidth'] = 0.7
+mpl.pyplot.style.use('science')
+mpl.rcParams["legend.fancybox"] = True
 
 
 # Run all the simulations
