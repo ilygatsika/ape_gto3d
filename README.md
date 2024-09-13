@@ -23,7 +23,7 @@ make test
 python3 run.py
 ```
 
-This program runs all calculations at once, stores results in pickle format and then generates figures in the `img` directory. Note that the `out` directory of the present git repo already contains all precalculated results that enable to reproduce figures. Input data is finite element solutions used as a reference and obtained by HelFEM (https://github.com/susilehtola/HelFEM). 
+This program runs all calculations at once, stores results in pickle format and then generates figures in the `img` directory. Note that the `out` directory of the present git repo already contains all precalculated results that enable to reproduce figures. The input data in the `dat` directory contains finite element solutions used as a reference and obtained by HelFEM (https://github.com/susilehtola/HelFEM). 
 
 _Disclaimer:_ Running all the computations from scratch takes around 1 week on a supercomputer and allocates more than 20 gigs of memory. Use with caution. Dedicated script for long computations:
 
