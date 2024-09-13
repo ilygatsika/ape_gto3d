@@ -236,6 +236,7 @@ def main():
     plt.ylabel("approx. error")
     plt.xlabel(r"$N=N_1+N_2$ discretisation basis functions")
     plt.yscale("log")
+    plt.grid(color='#EEEEEE')
     plt.legend()
     plt.gca().yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
     plt.gca().yaxis.set_minor_formatter(mticker.FormatStrFormatter('%.2f'))
