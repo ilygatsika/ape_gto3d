@@ -13,18 +13,61 @@ import os
 """
 Main code for H-norm error estimation using practical and guaranteed estimators
 Estimator is Theorem 3.7
+
+TODO in the future this program will replace src/plot.py
 """
 
+# User input
+basis = str(sys.argv[1]) # GTO basis set
+option = str(sys.argv[2]) # fine or coarse fem grid
+
+# recover filenames
+res_name, fig_name, fem_name, den_name = "res", "norm", "helfem", "density"
+if (option == 'coarse'):
+	res_name += "_small" 
+	fig_name += "_small" 
+	fem_name += "_small" 
+	den_name += "_small" 
+	
+resfile = "out/"+res_name+".pickle"   # file to load/store results
+figfile = "img/"+fig_name+".pdf"      # figure plot
+femfile = "dat/"+fem_name+".chk"      # helfem input 
+denfile = "dat/"+den_name+".hdf5"     # density input 
+atomfile = 'dat/1e_lmax20.chk'       # spectral basis for atom
+
+# Create out and img directory if non-existing
+if (not os.path.exists("img")): os.mkdir("img") 
+if (not os.path.exists("out")): os.mkdir("out")
+
+# Load computations for this basis otherwise compute them 
 try:
 
-    with open("out/estimator_01/res.pickle", 'rb') as file:
+    with open(resfile, 'rb') as file:
 	    data = pickle.load(file)
 
-except: 
+    """
+    Read data
+    """
+    all_basis = list(data.keys())
 
-    # Options
-    basis = str(sys.argv[1]) # GTO basis set
-    resfile = str(sys.argv[2]) # file to store results
+    # check wanted basis is precomputed
+    assert (basis in all_basis) 
+
+    # get shift
+    n_bas = len(all_basis)
+    s = data[all_basis[0]]["shift"]
+    s1 = data[all_basis[0]]["shift1"]
+    s2 = data[all_basis[0]]["shift2"]
+    s3 = data[all_basis[0]]["shift3"]
+    shift = (s1, s2, s3, s)
+    print(shift)
+
+    estim_atom = np.array([data[all_basis[i]]["estim_atom"] for i in range(n_bas)])
+    estim_Delta = np.array([data[all_basis[i]]["estim_Delta"] for i in range(n_bas)])
+    estim = np.array([data[all_basis[i]]["estimator"] for i in range(n_bas)])
+    err_H = np.array([data[all_basis[i]]["err_H"] for i in range(n_bas)])
+
+except:
 
     # Parameters for partition overlap 
     amin = 0.1 # if we put larger, such as 0.5, the constant C_P exploses
@@ -36,13 +79,8 @@ except:
     lmax = 6 # lmax <= 15 due to PySCF
     lebedev_order = 13
 
-    # Input files
-    density_file = 'dat/density_small.hdf5' # str(sys.argv[1])
-    helfem_res_file = 'dat/helfem.chk'
-    atom_file = 'dat/1e_lmax20.chk'
-
     # Read data Diatomic
-    dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(density_file)
+    dV, Rh, helfem_grid, wquad, u_fem, Z1, Z2 = utils.diatomic_density(denfile)
 
     def inner_projection(u1, u2, dV=dV):
         return np.sum(u1 * u2 * dV)
@@ -53,7 +91,7 @@ except:
     print("coords shape", coords.shape)
 
     # Reference FEM solution from HelFEM
-    Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = utils.diatomic_energy(helfem_res_file)
+    Efem, E2, Efem_kin, Efem_nuc, Efem_nucr = utils.diatomic_energy(femfile)
     Efem = Efem - Efem_nucr + shift
     # shift
     E2 += shift
@@ -111,7 +149,7 @@ except:
     """
 
     # Read data atomic
-    E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(atom_file, lmax)
+    E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(denfile, lmax)
 
     # Partition of unity evaluated on radial part
     g = np.sqrt(pou.partition_vec(r_rad, amin, amax, delta))
@@ -165,31 +203,17 @@ except:
     data["shift3"] = sigmas[2] 
     data["lmax"] = lmax
     data["lebedev_order"] = lebedev_order
-    data["density_file"] = density_file
-    data["helfem_res_file"] = helfem_res_file
-    data["atom_file"] = atom_file
+    data["denfile"] = denfile
+    data["femfile"] = femfile
+    data["atomfile"] = atomfile
     data["n_bas"] = mol.nbas
     key = basis
     utils.store_to_file(resfile, key, data)
 
-except: 
-
-    """
-    Read data
-    """
-    basis = list(data.keys())
-    n_bas = len(basis)
-    s = data[basis[0]]["shift"]
-    s1 = data[basis[0]]["shift1"]
-    s2 = data[basis[0]]["shift2"]
-    s3 = data[basis[0]]["shift3"]
-    shift = (s1, s2, s3, s)
-    print(shift)
-
-    estim_atom = np.array([data[basis[i]]["estim_atom"] for i in range(n_bas)])
-    estim_Delta = np.array([data[basis[i]]["estim_Delta"] for i in range(n_bas)])
-    estim = np.array([data[basis[i]]["estimator"] for i in range(n_bas)])
-    err_H = np.array([data[basis[i]]["err_H"] for i in range(n_bas)])
+"""
+Plots basis size and error
+"""
+def main():
 
     # Sort with desceanding error
     idx = np.argsort(err_H)[::-1]
@@ -208,7 +232,8 @@ except:
     plt.yscale("log")
     plt.legend()
     plt.gcf().set_size_inches(7, 6)
-    plt.savefig("img/norm.pdf", bbox_inches='tight')
+    plt.savefig(figfile, bbox_inches='tight')
     plt.close()
 
-
+if __name__ == "__main__":
+    main()
