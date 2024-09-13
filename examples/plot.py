@@ -33,6 +33,12 @@ err_H = np.array([data[basis[i]]["err_H"] for i in range(n_bas)])
 # Sort with desceanding error
 idx = np.argsort(err_H)[::-1]
 
+# multiply by constants according to r1 = 2*estim_atom + estim_Delta
+cP = data[basis[0]]["cP"]
+c1 = data[basis[0]]["c1"]
+val_atom = cP * 1./c1 * 2 * estim_atom[idx]
+val_lapl = cP * 1./c1 * estim_Delta[idx]
+
 """
 Plots estimator vs true error
 """
@@ -40,13 +46,14 @@ def main():
 
     labels = [basis[idx[i]] for i in range(n_bas)]
     plt.xticks(np.arange(n_bas), labels, rotation=45, fontsize=12, ha='right', rotation_mode='anchor')
-    plt.plot(estim[idx], 'x-', label=r"estimator")
-    plt.plot(estim_atom[idx], 'x-', label=r"atomic")
-    plt.plot(estim_Delta[idx], 'x-', label=r"Laplacian")
     plt.plot(err_H[idx], '^-', label="approx. error")
+    plt.plot(estim[idx], 'x-', label=r"estimate")
+    plt.plot(val_atom, 'x-', label=r"$A_1 + A_2$")
+    plt.plot(val_lapl, 'x-', label=r"$A_3$")
     plt.yscale("log")
+    plt.grid(color='#EEEEEE')
     plt.legend()
-    plt.gcf().set_size_inches(7, 6)
+    plt.gcf().set_size_inches(4.8, 3)
     plt.savefig("img/norm.pdf", bbox_inches='tight')
     plt.close()
 
