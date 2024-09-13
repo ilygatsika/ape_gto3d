@@ -1,16 +1,18 @@
 #from examples import gto_error, estimate, sensitivity, adapt
 from examples import plot, adapt
 import matplotlib as mpl
-import scienceplots
 
 # Setting matplotlib params
 # User can customize this globally
 # -----------------------
 
-mpl.rcParams["legend.labelspacing"] = 0.01
-mpl.pyplot.style.use('science')
-mpl.rcParams["legend.fancybox"] = True
-
+# included in styles in Python 3.10.12 
+# but other versions of Python might need:
+# import scienceplots
+try:
+    mpl.pyplot.style.use('science')
+except:
+    raise ImportError("add import scienceplots")
 
 # Run all the simulations
 # -----------------------

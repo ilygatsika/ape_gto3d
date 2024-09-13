@@ -234,7 +234,7 @@ def main():
     plt.plot(Nb_list, vec_Herr, '^-', label=r"$N_1=N_2$")
     plt.plot(Nb12_list, vec_Herr_adapt, 'o-', label="adaptive")
     plt.ylabel("approx. error")
-    plt.xlabel(r"$N=N_1+N_2$ discretisation basis functions")
+    plt.xlabel(r"$N=N_1+N_2$ basis functions")
     plt.yscale("log")
     plt.grid(color='#EEEEEE')
     plt.legend()

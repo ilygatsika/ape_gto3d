@@ -45,7 +45,7 @@ Plots estimator vs true error
 def main():
 
     labels = [basis[idx[i]] for i in range(n_bas)]
-    plt.xticks(np.arange(n_bas), labels, rotation=45, fontsize=12, ha='right', rotation_mode='anchor')
+    plt.xticks(np.arange(n_bas), labels, rotation=45, ha='right', rotation_mode='anchor')
     plt.plot(err_H[idx], '^-', label="approx. error")
     plt.plot(estim[idx], 'x-', label=r"estimate")
     plt.plot(val_atom, 'x-', label=r"$A_1 + A_2$")
