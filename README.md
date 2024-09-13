@@ -7,7 +7,7 @@ Python code for the a posteriori estimation of Gaussian-type orbital basis set e
 Python 3.10.12 with the libraries:
 - numpy, scipy, sympy, PySCF (https://github.com/pyscf/pyscf) for computations;
 - h5py for saving results;
-- matplotlib, scienceplots for plotting results.
+- matplotlib for plotting results.
 
 ## Install and test
 
