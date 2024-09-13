@@ -5,6 +5,7 @@ import src.partition as pou
 import src.norm as norm
 from numpy.linalg import norm as norm2
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import numpy as np
 import pickle
 import sys
@@ -231,12 +232,14 @@ def main():
     Nb12_list = vec_nbas1_adapt + vec_nbas2_adapt
 
     plt.plot(Nb_list, vec_Herr, 'g^-', label=r"$N_1=N_2$")
-    plt.plot(Nb12_list, vec_Herr_adapt, 'o-', color='orange', label="adaptive")
+    plt.plot(Nb12_list, vec_Herr_adapt, 'o-', label="adaptive")
     plt.ylabel("approx. error")
     plt.xlabel(r"$N=N_1+N_2$ discretisation basis functions")
     plt.yscale("log")
     plt.legend()
-    plt.gcf().set_size_inches(7, 6)
+    plt.gca().yaxis.set_major_formatter(mticker.FormatStrFormatter('%.2f'))
+    plt.gca().yaxis.set_minor_formatter(mticker.FormatStrFormatter('%.2f'))
+    plt.gcf().set_size_inches(3.3, 3)
     plt.savefig("img/adapt_3d.pdf", bbox_inches='tight')
     plt.close()
 
