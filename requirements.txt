@@ -2,5 +2,6 @@ numpy
 scipy
 sympy
 matplotlib
+scienceplots
 pyscf
 h5py
