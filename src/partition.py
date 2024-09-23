@@ -168,13 +168,13 @@ def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, delta, plot=False):
             D1 = Delta(r1, amin, amax)
             g1 = nabla(r1, amin, amax)
             p1 = partition(r1, amin, amax, delta)
-            val1 = - 0.5 * D1 + g1**2/(4*p1) + V1(r1) + (sigma1 - sigma)*p1
+            val1 = - 0.25 * D1 + g1**2/(4*p1) + V1(r1) + (sigma1 - sigma)*p1
             
             # Complement term only depends on 1
             D3 = - D1
             g3 = - g1
             p3 = 1 - p1
-            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+            val3 = - 0.25 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
 
         # if at slice 2 and not at slice 1
         elif ((not in_slice_1[i]) and in_slice_2[i]): 
@@ -183,13 +183,13 @@ def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, delta, plot=False):
             D2 = Delta(r2, amin, amax)
             g2 = nabla(r2, amin, amax)
             p2 = partition(r2, amin, amax, delta)
-            val2 = - 0.5 * D2 + g2**2/(4*p2) + V2(r2) + (sigma2 - sigma)*p2
+            val2 = - 0.25 * D2 + g2**2/(4*p2) + V2(r2) + (sigma2 - sigma)*p2
             
             # Complement term only depends on 2
             D3 = - D2
             g3 = - g2
             p3 = 1 - p2
-            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+            val3 = - 0.25 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
 
         # if at slice 1 and 2
         elif (in_slice_1[i] and in_slice_2[i]):
@@ -198,19 +198,19 @@ def eval_supremum(amin, amax, Rh, Z1, Z2, sigmas, delta, plot=False):
             D1 = Delta(r1, amin, amax)
             g1 = nabla(r1, amin, amax)
             p1 = partition(r1, amin, amax, delta)
-            val1 = - 0.5 * D1 + g1**2/(4*p1) + V1(r1) + (sigma1 - sigma)*p1
+            val1 = - 0.25 * D1 + g1**2/(4*p1) + V1(r1) + (sigma1 - sigma)*p1
 
             # Term on 2
             D2 = Delta(r2, amin, amax)
             g2 = nabla(r2, amin, amax)
             p2 = partition(r2, amin, amax, delta)
-            val2 = - 0.5 * D2 + g2**2/(4*p2) + V2(r2) + (sigma2 - sigma)*p2 
+            val2 = - 0.25 * D2 + g2**2/(4*p2) + V2(r2) + (sigma2 - sigma)*p2 
 
             # Complement term only depends on 2
             D3 = - D1 - D2
             g3 = - g1 - g2
             p3 = 1 - p1 - p2
-            val3 = - 0.5 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
+            val3 = - 0.225 * D3 + (g3)**2/(4*p3) + (sigma3 - sigma) * p3
 
         # Store value (positive part)
         vals[i] = max(val1 + val2 + val3, 0)
