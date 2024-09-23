@@ -24,6 +24,7 @@ import os
 resfile = "out/adapt.pickle"
 
 # Create img directory if non-existing
+if (not os.path.exists("img")): os.mkdir("img") 
 if (not os.path.exists("out")): os.mkdir("out") 
 
 # Load data otherwise compute them 
@@ -231,10 +232,10 @@ def main():
     Nb_list = vec_nbas1 + vec_nbas2
     Nb12_list = vec_nbas1_adapt + vec_nbas2_adapt
 
-    plt.plot(Nb_list, vec_Herr, '^-', label=r"$N_1=N_2$")
+    plt.plot(Nb_list, vec_Herr, '^-', label=r"$n_1=n_2$")
     plt.plot(Nb12_list, vec_Herr_adapt, 'o-', label="adaptive")
     plt.ylabel("approx. error")
-    plt.xlabel(r"$N=N_1+N_2$ basis functions")
+    plt.xlabel(r"$N=n_1+n_2$ basis functions")
     plt.yscale("log")
     plt.grid(color='#EEEEEE')
     plt.legend()
