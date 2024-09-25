@@ -1,4 +1,4 @@
-#from examples import gto_error, estimate, sensitivity, adapt
+#from examples import estimate, plot, adapt
 from examples import plot, adapt
 import matplotlib as mpl
 
@@ -8,11 +8,14 @@ import matplotlib as mpl
 
 # included in styles in Python 3.10.12 
 # but other versions of Python might need:
-# import scienceplots
 try:
     mpl.pyplot.style.use('science')
 except:
-    raise ImportError("add import scienceplots")
+    import scienceplots
+    mpl.pyplot.style.use('science')
+
+mpl.rcParams["legend.labelspacing"] = 0.001
+mpl.rcParams["lines.markersize"] = 4
 
 # Run all the simulations
 # -----------------------
@@ -23,14 +26,14 @@ basis="cc-pvdz unc-cc-pvdz unc-cc-pvtz pc-1 unc-pc-1 pc-2 unc-pc-2 \
 
 # split expression etc
 
-# Run simulations from Section 4.2.3.
-#gto_error.main()
-plot.main()
-
 # TODO test and pass two arguments: basis and grid as
 # not correct for the moment
 # >> python3 run.py "basis" "grid"
 #estimate.main()
+
+# Run simulations from Section 4.2.3.
+#gto_error.main()
+plot.main()
 
 # Run simulations from Section 4.2.4
 #sensitivity.main()
