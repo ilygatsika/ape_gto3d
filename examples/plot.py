@@ -46,18 +46,26 @@ Plots estimator vs true error
 """
 def main():
 
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, sharex=True, 
+            figsize=(4.5,4.3), gridspec_kw={'height_ratios': [2, 1]})
     labels = [basis[idx[i]] for i in range(n_bas)]
     plt.xticks(np.arange(n_bas), labels, rotation=45, ha='right', rotation_mode='anchor')
-    plt.plot(err_H[idx], '^--', label="approx. error on $\phi_1$")
-    plt.plot(err_eigval[idx], 's--', label="approx. error on $\lambda_1$")
-    plt.plot(estim[idx], '^-', label=r"estimate on $\phi_1$")
-    plt.plot(estim_eigval[idx], 's-', label=r"estimate on $\lambda_1$")
-    plt.plot(val_atom, '*-', label=r"$\eta_1 + \eta_2$")
-    plt.plot(val_lapl, 'x-', label=r"$\eta_3$")
-    plt.yscale("log")
-    plt.grid(color='#EEEEEE')
-    plt.legend()
-    plt.gcf().set_size_inches(4.8, 3)
+    
+    ax1.plot(err_H[idx], 's-', label=r"$\|\varphi_1 - \varphi_{1N}\|_A$")
+    ax1.plot(estim[idx], '^-', label=r"estimate on $\varphi_1$")
+    ax1.plot(val_atom, '*-', label=r"$(\eta^2_1 + \eta^2_2)^{1/2}$")
+    ax1.plot(val_lapl, 'x-', label=r"$\eta_3$") 
+    ax1.grid(color='#EEEEEE')
+    ax1.set_yscale("log")
+    ax1.legend()
+
+    ax2.plot(err_eigval[idx], 's--', label="$\lambda_{1N} - \lambda_1$")
+    ax2.plot(estim_eigval[idx], '^--', label=r"estimate on $\lambda_1$")
+    ax2.grid(color='#EEEEEE')
+    ax2.set_yscale("log")
+    ax2.legend()
+    
+    plt.subplots_adjust(wspace=0, hspace=0)
     plt.savefig("img/norm.pdf", bbox_inches='tight')
     plt.close()
 
