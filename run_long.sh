@@ -13,8 +13,8 @@ BASES="cc-pvdz unc-cc-pvdz unc-cc-pvtz pc-1 unc-pc-1 pc-2 unc-pc-2 \
 for BASIS in $BASES;
 do 
     echo $BASIS
-    #python3 examples/estimate.py $BASIS $GRID
-    python3 examples/overwrite_cH.py $BASIS
+    python3 examples/estimate.py $BASIS $GRID
+    #python3 examples/overwrite_cH.py $BASIS
 
     #git add out/*
     #git commit -m "ljll server results on $BASIS (fine grid)"
