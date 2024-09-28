@@ -14,7 +14,7 @@ for BASIS in $BASES;
 do 
     echo $BASIS
     #python3 examples/estimate.py $BASIS $GRID
-    python3 temp.py $BASIS
+    python3 examples/overwrite_cH.py $BASIS
 
     #git add out/*
     #git commit -m "ljll server results on $BASIS (fine grid)"
