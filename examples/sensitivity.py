@@ -50,7 +50,7 @@ mol, E_gto0, C = gto.build_gto_sol(Rh, 'H', 'H', basis, basis)
 E_gto = E_gto0 + shift
 
 # Constant of Assumption 3
-cH = 1./Efem
+cH = 1./np.sqrt(Efem)
 # Gap constants for the first eigenvalue
 c1 = (1 - E_gto / E2)**2 # equation 3.3, C_tilde
 c2 = (1 - E_gto / E2)**2 * E2 # equation 3.4, C_hat
@@ -79,7 +79,7 @@ for shift in [3.0, 4.0, 5.0, 6.0, 7.0, 8.0]:
     sigmas = (3, 3, shift_inf, shift)
     Efem = Efem0 - Efem_nucr + shift
     E2 = E20 + shift
-    cH = 1./Efem
+    cH = 1./np.sqrt(Efem)
     print(shift, ' & ', Efem / E2, ' & ', cH, r'\\')
 
 

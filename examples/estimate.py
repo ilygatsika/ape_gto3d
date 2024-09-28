@@ -66,7 +66,7 @@ try:
     estim_Delta = np.array([data[all_basis[i]]["estim_Delta"] for i in range(n_bas)])
     estim = np.array([data[all_basis[i]]["estimator"] for i in range(n_bas)])
     err_H = np.array([data[all_basis[i]]["err_H"] for i in range(n_bas)])
-
+    
 except:
 
     # Parameters for partition overlap 
@@ -108,7 +108,7 @@ except:
         u_Delta_gto = - u_Delta_gto
 
     # Constant of Assumption 3
-    cH = 1./Efem
+    cH = 1./np.sqrt(Efem)
     # Gap constants for the first eigenvalue
     c1 = (1 - E_gto / E2)**2 # equation 3.3, C_tilde
     c2 = (1 - E_gto / E2)**2 * E2 # equation 3.4, C_hat
@@ -131,7 +131,7 @@ except:
     Laplacian estimator
     takes some time
     """
-
+    
     # Green's function of the screened Laplacian operator
     alpha = np.sqrt(shift_inf)
     kernel = lambda x: 1./(4*np.pi) * np.exp(-alpha * norm2(x, axis=1)**2)/norm2(x, axis=1)
@@ -143,13 +143,13 @@ except:
     estim_Delta = norm.green_inner(p_res, kernel, coords, dV)
 
     print('estim_Delta=',estim_Delta)
-
+    
     """
     Atomic estimator
     """
 
     # Read data atomic
-    E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(denfile, lmax)
+    E_atom, orbs_rad, r_rad, w_rad = utils.atomic_energy(atomfile, lmax)
 
     # Partition of unity evaluated on radial part
     g = np.sqrt(pou.partition_vec(r_rad, amin, amax, delta))
@@ -220,10 +220,12 @@ def main():
 
     """
     Plot error convergence
+    TODO 
+    """
     """
     plt.rcParams.update({'font.size': 13})
-    #plt.title(r"$\sigma_1=%.1f \sigma_2=%.1f \sigma_3=%.1f s=%.1f" %shift)
-    labels = [basis[idx[i]] for i in range(n_bas)]
+    plt.title(r"$\sigma_1=%.1f \sigma_2=%.1f \sigma_3=%.1f s=%.1f" %shift)
+    labels = [all_basis[idx[i]] for i in range(n_bas)]
     plt.xticks(np.arange(n_bas), labels, rotation=45, fontsize=12, ha='right', rotation_mode='anchor')
     plt.plot(estim[idx], 'x-', label=r"estimator")
     plt.plot(estim_atom[idx], 'x-', label=r"atom part")
@@ -234,6 +236,6 @@ def main():
     plt.gcf().set_size_inches(7, 6)
     plt.savefig(figfile, bbox_inches='tight')
     plt.close()
-
+    """
 if __name__ == "__main__":
     main()
