@@ -18,6 +18,8 @@ Efem = Efem - Efem_nucr + shift
 # Constant of Assumption 3
 cH = 1./np.sqrt(Efem)
 
+print("cH=", cH)
+
 # Store results to file
 data = {}
 data["cH"] = cH
