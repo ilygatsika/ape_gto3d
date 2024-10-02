@@ -41,12 +41,16 @@ def build_gto_sol(Rh, elem1, elem2, basis1, basis2):
 
     # Without nuclear repulsion
     E_gto = E_gto_tot - mol.energy_nuc()
+   
+    # Get excited states for electronic energy
+    # reminder from PySCF source in hf1e_scf (1e only!): 
+    # mf.mo_energy, mf.mo_coeff = mf.eig(h1e, s1e)
+    # thus for 1 electron:
+    # E_gto = myhf.mo_energy[0][0]
+    # E_gto_2 = myhf.mo_energy[0][1]
+    E_gto_2 = myhf.mo_energy[0][1]
     
-    # Excited states (10 for H2)
-    #E_gto_excited = myhf.mo_energy[0]
-    
-    #return (mol, E_gto, C, E_gto_excited)
-    return (mol, E_gto, C)
+    return (mol, E_gto, E_gto_2, C)
 
 def build_Delta(mol, coords, C):
     """

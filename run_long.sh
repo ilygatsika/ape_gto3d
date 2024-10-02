@@ -14,7 +14,8 @@ for BASIS in $BASES;
 do 
     echo $BASIS
     python3 examples/estimate.py $BASIS $GRID
-    #python3 examples/overwrite_cH.py $BASIS
+    # uncomment following line to overwrite constants
+    #python3 examples/update_constants.py $BASIS
 
     #git add out/*
     #git commit -m "ljll server results on $BASIS (fine grid)"

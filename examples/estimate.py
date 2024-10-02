@@ -97,10 +97,11 @@ except:
     E2 += shift
 
     # Approximate GTO solution from PySCF
-    mol, E_gto, C = gto.build_gto_sol(Rh, 'H', 'H', basis, basis)
+    mol, E_gto, E_gto_2, C = gto.build_gto_sol(Rh, 'H', 'H', basis, basis)
     u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
     # Shift
     E_gto += shift
+    E_gto_2 += shift
     # H(-X) = E(-X) by convention take positive
     if ( inner_projection(u_fem, u_gto) < 0 ):
         C = - C
@@ -108,10 +109,10 @@ except:
         u_Delta_gto = - u_Delta_gto
 
     # Constant of Assumption 3
-    cH = 1./np.sqrt(Efem)
+    cH = 1./np.sqrt(- 2 + shift) # for H2+
     # Gap constants for the first eigenvalue
-    c1 = (1 - E_gto / E2)**2 # equation 3.3, C_tilde
-    c2 = (1 - E_gto / E2)**2 * E2 # equation 3.4, C_hat
+    c1 = (1 - E_gto / E_gto_2)**2 # equation 3.3, C_tilde
+    c2 = (1 - E_gto / E_gto_2)**2 * E_gto_2 # equation 3.4, C_hat
 
     print('cH=',cH)
     print('c1=',c1)
@@ -167,7 +168,11 @@ except:
     # C tilde is c1
     # C hat is c2
     final_estim = pow(cP * 1./c1 * r1 + Efem * cP**2 * 1./c2**2 * r1**2, 0.5)
-    print("Estimator of Theorem 3.7=", final_estim)
+    print("Estimator Theorem 3.7 eigenvectors=", final_estim)
+
+    # do not forget the eigenvalue bound
+    estim_eigval = cP * 1./c1 * r1  
+    print("eigenvalues=", estim_eigval)
 
     # True Hnorm error
     # Laplacian term

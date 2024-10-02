@@ -52,7 +52,9 @@ except:
     # Parameters for partition overlap 
     amin = 0.1 # if we put larger, such as 0.5, the constant C_P exploses
     amax = 0.8 # max 0.9
-    shift = 4.0 # 3.80688477
+    #shift = 4.0 # 3.80688477
+    # shift such that -8+shift>0
+    shift = 9.0 # 3.80688477
     shift_inf = 3
     sigmas = (3, 3, shift_inf, shift)
     # Parameters for spectral decomposition
@@ -95,13 +97,14 @@ except:
 
         # Approximate GTO solution from PySCF
         start_t = time.time()
-        mol, E_gto, C = gto.build_gto_sol(Rh, 'Li', 'H', basis_1, basis_2)
+        mol, E_gto, E_gto_2, C = gto.build_gto_sol(Rh, 'Li', 'H', basis_1, basis_2)
         u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
         end_t = time.time()
         print("solution on GTO obtained in time=", end_t - start_t)
 
         # Shift
         E_gto += shift
+        E_gto_2 += shift
         # H(-X) = E(-X) by convention take positive
         if ( inner_projection(u_fem, u_gto) < 0 ):
             C = - C
@@ -178,10 +181,11 @@ except:
     
         # Approximate GTO solution from PySCF
         basis = basis_list[i]
-        mol, E_gto, C = gto.build_gto_sol(Rh, 'Li', 'H', basis, basis)
+        mol, E_gto, E_gto_2, C = gto.build_gto_sol(Rh, 'Li', 'H', basis, basis)
         u_gto, u_Delta_gto = gto.build_Delta(mol, coords, C)
         # Shift
         E_gto += shift
+        E_gto_2 += shift
         # H(-X) = E(-X) by convention take positive
         if ( inner_projection(u_fem, u_gto) < 0 ):
             C = - C
